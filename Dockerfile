@@ -1,7 +1,8 @@
 FROM perspective/python3
 
 # Install Python development library
-RUN apt-get -y python3.7-dev 
+RUN apt-get update
+RUN apt-get -y install python3.7-dev 
 
 # Add server source
 ADD ./perspective_server /opt/perspective_server
