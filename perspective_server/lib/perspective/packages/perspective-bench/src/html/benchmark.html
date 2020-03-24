@@ -1,0 +1,44 @@
+<!--
+   
+   Copyright (c) 2017, the Perspective Authors.
+   
+   This file is part of the Perspective library, distributed under the terms of
+   the Apache License 2.0.  The full license can be found in the LICENSE file.
+
+-->
+
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
+
+    <script src="perspective-viewer.js"></script>
+    <script src="perspective-viewer-hypergrid.js"></script>
+    <script src="perspective-viewer-highcharts.js"></script>
+
+    <link rel='stylesheet' href="index.css">
+    <link rel='stylesheet' href="material.css" is="custom-style">
+
+</head>
+
+<body>
+
+    <perspective-viewer></perspective-viewer>
+
+    <script>
+        window.addEventListener('WebComponentsReady', async () => {
+            const el = document.getElementsByTagName('perspective-viewer')[0];
+            el.addEventListener("perspective-config-update", () => localStorage.setItem("layout", JSON.stringify(el.save())));
+            el.restore(JSON.parse(localStorage.getItem("layout")));
+            const req = await fetch("benchmark.arrow");
+            const arrow = await req.arrayBuffer();
+            el.load(arrow);
+            el.toggleConfig();
+        });
+    </script>
+
+</body>
+
+</html>

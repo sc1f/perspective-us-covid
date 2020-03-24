@@ -1,0 +1,48 @@
+include README.md
+include dist/LICENSE
+
+include setup.cfg
+include pyproject.toml
+include .bumpversion.cfg
+include Makefile
+
+# Source files for perspective-python
+graft perspective
+include perspective/table/*.so
+include perspective/table/*.dll
+include perspective/table/*.dylib
+
+
+graft perspective/tests
+
+# Documentation
+graft docs
+exclude docs/\#*
+
+# docs subdirs we want to skip
+prune docs/build
+prune docs/gh-pages
+prune docs/dist
+
+# don't ship benchmark
+prune bench
+
+
+# Use package.json for versioning
+include package.json
+
+# C++ build
+graft dist/cmake
+graft dist/src
+graft perspective/src
+graft perspective/include
+graft dist/test
+include dist/CMakeLists.txt
+
+# Patterns to exclude from any directory
+global-exclude *~
+global-exclude *.pyc
+global-exclude *.pyo
+global-exclude .git
+global-exclude .ipynb_checkpoints
+global-exclude .DS_Store

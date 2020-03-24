@@ -1,0 +1,28 @@
+@import "~@finos/perspective-viewer/src/less/fonts.less";
+@import (reference) "~@finos/perspective-viewer/src/themes/material.less";
+@import (reference) "~@finos/perspective-viewer/src/themes/material.dark.less";
+
+div.PSPContainer,
+div.PSPContainer-dark {
+    overflow: auto;
+    resize: both;
+    padding-right: 5px;
+    padding-bottom: 5px;
+    height: 500px;
+    flex: 1;
+}
+
+
+div.PSPContainer perspective-viewer{
+    .perspective-viewer-material();
+}
+
+div.PSPContainer-dark perspective-viewer {
+    .perspective-viewer-material-dark();
+}
+
+div.PSPContainer perspective-viewer,
+div.PSPContainer-dark perspective-viewer {
+    display: block;
+    height: 98%;
+}
