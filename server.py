@@ -1,5 +1,6 @@
 import tornado.ioloop
 import tornado.web
+import os
 
 class MainHandler(tornado.web.RequestHandler):
     def get(self):
@@ -11,6 +12,7 @@ def make_app():
     ])
 
 if __name__ == "__main__":
+    port = int(os.environ.get("PORT", 5000))
     app = make_app()
-    app.listen(8888)
+    app.listen(port)
     tornado.ioloop.IOLoop.current().start()
