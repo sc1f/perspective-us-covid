@@ -1,12 +1,17 @@
+import os
+import pandas as pd
+
+here = os.path.abspath(os.path.dirname(__file__))
+
 # State-level data from the COVID Tracking Project, county-level data from USAFacts
 STATE_URL = "https://covidtracking.com/api/states/daily"
 COUNTY_CONFIRMED_URL = "https://static.usafacts.org/public/data/covid-19/covid_confirmed_usafacts.csv"
 COUNTY_DEATHS_URL = "https://static.usafacts.org/public/data/covid-19/covid_deaths_usafacts.csv"
 
 # Population and unemployment data from 2018, as that is the last best estimate. Datasets provided by the U.S. Census and the USDA.
-STATE_POPULATION_URL = "http://www2.census.gov/programs-surveys/popest/datasets/2010-2019/national/totals/nst-est2019-popchg2010_2019.csv?#"
-COUNTY_POPULATION_URL = "https://www.ers.usda.gov/webdocs/DataFiles/48747/PopulationEstimates.csv?v=3011.3"
-COUNTY_UNEMPLOYMENT_URL = "https://www.ers.usda.gov/webdocs/DataFiles/48747/Unemployment.csv?v=2564.4"
+STATE_POPULATION_PATH = os.path.abspath(os.path.join(here, "data", "state_population_2019.csv"))
+COUNTY_POPULATION_PATH = os.path.abspath(os.path.join(here, "data", "county_population_2018.csv"))
+COUNTY_UNEMPLOYMENT_PATH = os.path.abspath(os.path.join(here, "data", "county_unemployment_2018.csv"))
 
 # Standardize on abbreviations for states, and full names in 'stateName'
 US_STATE_ABBREVIATIONS = {
@@ -49,7 +54,6 @@ US_STATE_ABBREVIATIONS = {
     'Ohio': 'OH',
     'Oklahoma': 'OK',
     'Oregon': 'OR',
-    'Palau': 'PW',
     'Pennsylvania': 'PA',
     'Puerto Rico': 'PR',
     'Rhode Island': 'RI',
@@ -71,3 +75,44 @@ US_STATE_ABBREVIATIONS = {
 }
 
 US_STATE_FULL_NAMES = {key: value for (value, key) in US_STATE_ABBREVIATIONS.items()}
+
+# Political alignment of each state's governor, house, and legislature
+def _make_state_government_alignment_df():
+    exceptions = {
+        "AK": {"State": "AK", "Governor": "Republican", "State Senate": "Republican", "State House": "Split"},
+        "DC": {"State": "DC", "Governor": "N/A", "State Senate": "N/A", "State House": "N/A"},
+        "KS": {"State": "KS", "Governor": "Democrat", "State Senate": "Republican", "State House": "Republican"},
+        "KY": {"State": "KY", "Governor": "Democrat", "State Senate": "Republican", "State House": "Republican"},
+        "LA": {"State": "LA", "Governor": "Democrat", "State Senate": "Republican", "State House": "Republican"},
+        "MA": {"State": "MA", "Governor": "Republican", "State Senate": "Democrat", "State House": "Democrat"},
+        "MD": {"State": "MD", "Governor": "Republican", "State Senate": "Democrat", "State House": "Democrat"},
+        "MI": {"State": "MI", "Governor": "Democrat", "State Senate": "Republican", "State House": "Republican"},
+        "MN": {"State": "MN", "Governor": "Democrat", "State Senate": "Republican", "State House": "Democrat"},
+        "MT": {"State": "MT", "Governor": "Democrat", "State Senate": "Republican", "State House": "Republican"},
+        "NC": {"State": "NC", "Governor": "Democrat", "State Senate": "Republican", "State House": "Republican"},
+        "NH": {"State": "NH", "Governor": "Republican", "State Senate": "Democrat", "State House": "Democrat"},
+        "PA": {"State": "PA", "Governor": "Democrat", "State Senate": "Republican", "State House": "Republican"},
+        "PR": {"State": "PR", "Governor": "New Progressive", "State Senate": "New Progressive", "State House": "New Progressive"},
+        "VI": {"State": "VI", "Governor": "Democrat", "State Senate": "N/A", "State House": "N/A"},
+        "VT": {"State": "VT", "Governor": "Republican", "State Senate": "Democrat", "State House": "Democrat"},
+        "WI": {"State": "WI", "Governor": "Democrat", "State Senate": "Republican", "State House": "Republican"},
+        "AS": {"State": "AS", "Governor": "Democrat", "State Senate": "N/A", "State House": "N/A"},
+        "GU": {"State": "GU", "Governor": "Democrat", "State Senate": "N/A", "State House": "N/A"},
+        "MP": {"State": "MP", "Governor": "Republican", "State Senate": "N/A", "State House": "N/A"},
+    }
+    republican = ["AL", "AZ", "AR", "FL", "GA", "ID", "IN", "IA", "MS", "MO", "NE", "ND", "OH", "OK", "SC", "SD", "TN", "TX", "UT", "WV", "WY"]
+    democrat = ["CA", "CO", "CT", "DE", "HI", "IL", "ME", "NV", "NJ", "NM", "NY", "OR", "RI", "VA", "WA"]
+
+    data = []
+    for state in US_STATE_ABBREVIATIONS.values():
+        if state in exceptions:
+            data.append(exceptions[state])
+        elif state in republican:
+            data.append({"State": state, "Governor": "Republican", "State Senate": "Republican", "State House": "Republican"})
+        elif state in democrat:
+            data.append({"State": state, "Governor": "Democrat", "State Senate": "Democrat", "State House": "Democrat"})
+        else:
+            raise ValueError("{0} does not exist in lookup".format(state))
+    return pd.DataFrame(data)
+
+STATE_GOVERNMENT_ALIGNMENT = _make_state_government_alignment_df()

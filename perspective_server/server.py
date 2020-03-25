@@ -33,9 +33,6 @@ class MainHandler(tornado.web.RequestHandler):
 
 def make_app():
     here = os.path.abspath(os.path.dirname(__file__))
-    settings = {
-        "debug": True
-    }
 
     DATA_HOST = DataHost()
     MANAGER = PerspectiveManager()
@@ -49,7 +46,7 @@ def make_app():
         # create a websocket endpoint that the client Javascript can access
         (r"/static/(.*)", StaticHandler, {"path": os.path.join(here, "static")}),
         (r"/ws", PerspectiveTornadoHandler, {"manager": MANAGER, "check_origin": True})
-    ], **settings)
+    ])
 
 
 if __name__ == "__main__":
