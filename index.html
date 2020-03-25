@@ -1,0 +1,64 @@
+<!--
+   
+   Copyright (c) 2017, the Perspective Authors.
+   
+   This file is part of the Perspective library, distributed under the terms of
+   the Apache License 2.0.  The full license can be found in the LICENSE file.
+
+-->
+
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
+
+    <script src="http://localhost:5000/static/perspective-viewer/umd/perspective-viewer.js"></script>
+    <script src="http://localhost:5000/static/perspective-viewer-datagrid/umd/perspective-viewer-datagrid.js"></script>
+    <script src="http://localhost:5000/static/perspective-viewer-highcharts/umd/perspective-viewer-highcharts.js"></script>
+    <script src="http://localhost:5000/static/perspective-viewer-d3fc/umd/perspective-viewer-d3fc.js"></script>
+    <script src="http://localhost:5000/static/perspective/umd/perspective.js"></script>>
+
+    <link rel='stylesheet' href="http://localhost:5000/static/perspective-viewer/umd/material.css">
+
+    <style>
+        perspective-viewer{position:absolute;top:0;left:0;right:0;bottom:0;}
+    </style>
+
+</head>
+
+<body>
+
+    <perspective-viewer id="viewer"></perspective-viewer>
+
+    <script>
+
+        window.addEventListener('WebComponentsReady', async function() {
+            // Create two perspective interfaces, one remotely via WebSocket, 
+            // and one local via WebWorker.
+            const websocket = perspective.websocket(
+                "ws://localhost:5000/ws");
+            const worker = perspective.worker();
+
+            // Get a proxy for a view named "state_data_source", registered on
+            // the server with a reciprocal call to `host_view()`.
+            // No data is transferred, `view` is a virtual handle for data on
+            // the server.
+            const view = websocket.open_view('state_data_source');
+
+            // Create a `table` from this, owned by the local WebWorker.
+            // Data is transferred from `view` to the local WebWorker, both
+            // the current state and all future updates, as Arrows.
+            const table = worker.table(view);
+            
+            // Load this in the `<perspective-viewer>`.
+            document.getElementById('viewer').load(table);
+            viewer.toggleConfig();
+        });
+
+    </script>
+
+</body>
+
+</html>

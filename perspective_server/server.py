@@ -8,9 +8,18 @@ import tornado.web
 import tornado.ioloop
 from datetime import date, datetime
 
-sys.path.insert(1, os.path.join(os.path.dirname(__file__), '..'))
+# COVID data is hosted in a `Table`, which is then exposed through `PerspectiveTornadoHandler`
 from perspective import Table, PerspectiveManager, PerspectiveTornadoHandler
 
+# Import datasets
+from data import DataHost
+
+class StaticHandler(tornado.web.StaticFileHandler):
+
+    def set_default_headers(self):
+        self.set_header("Access-Control-Allow-Origin", "*")
+        self.set_header("Access-Control-Allow-Headers", "x-requested-with")
+        self.set_header('Access-Control-Allow-Methods', 'POST, GET, OPTIONS')
 
 class MainHandler(tornado.web.RequestHandler):
 
@@ -20,61 +29,27 @@ class MainHandler(tornado.web.RequestHandler):
         self.set_header('Access-Control-Allow-Methods', 'POST, GET, OPTIONS')
 
     def get(self):
-        self.render("index.html")
-
-
-def data_source():
-    rows = []
-    modifier = random.random() * random.randint(1, 50)
-    for i in range(5):
-        rows.append({
-            "name": SECURITIES[random.randint(0, len(SECURITIES) - 1)],
-            "client": CLIENTS[random.randint(0, len(CLIENTS) - 1)],
-            "open": (random.random() * 75 + random.randint(0, 9)) * modifier,
-            "high": (random.random() * 105 + random.randint(1, 3)) * modifier,
-            "low": (random.random() * 85 + random.randint(1, 3)) * modifier,
-            "close": (random.random() * 90 + random.randint(1, 3)) * modifier,
-            "lastUpdate": datetime.now(),
-            "date": date.today()
-        })
-    return rows
-
-
-'''Set up our data for this example.'''
-SECURITIES = ["AAPL.N", "AMZN.N", "QQQ.N", "NVDA.N", "TSLA.N", "FB.N", "MSFT.N", "TLT.N", "XIV.N", "YY.N", "CSCO.N", "GOOGL.N", "PCLN.N"]
-CLIENTS = ["Homer", "Marge", "Bart", "Lisa", "Maggie", "Moe", "Lenny", "Carl", "Krusty"]
-
+        self.write("Access the dashboard at: ")
 
 def make_app():
-    # Create an instance of `PerspectiveManager` and a table.
+    here = os.path.abspath(os.path.dirname(__file__))
+    settings = {
+        "debug": True
+    }
+
+    DATA_HOST = DataHost()
     MANAGER = PerspectiveManager()
-    TABLE = Table({
-        "name": str,
-        "client": str,
-        "open": float,
-        "high": float,
-        "low": float,
-        "close": float,
-        "lastUpdate": datetime,
-        "date": date
-    }, limit=2500)
-
-    # Track the table with the name "data_source_one", which will be used in
-    # the front-end to access the Table.
-    MANAGER.host_table("data_source_one", TABLE)
-
-    # update with new data every 50ms
-    def updater():
-        TABLE.update(data_source())
-
-    callback = tornado.ioloop.PeriodicCallback(callback=updater, callback_time=50)
-    callback.start()
+    STATE_TABLE = DATA_HOST.state_table
+    COUNTY_TABLE = DATA_HOST.county_table
+    MANAGER.host_view("state_data_source", STATE_TABLE.view())
+    MANAGER.host_view("county_data_source", COUNTY_TABLE.view())
 
     return tornado.web.Application([
         (r"/", MainHandler),
         # create a websocket endpoint that the client Javascript can access
-        (r"/websocket", PerspectiveTornadoHandler, {"manager": MANAGER, "check_origin": True})
-    ])
+        (r"/static/(.*)", StaticHandler, {"path": os.path.join(here, "static")}),
+        (r"/ws", PerspectiveTornadoHandler, {"manager": MANAGER, "check_origin": True})
+    ], **settings)
 
 
 if __name__ == "__main__":
