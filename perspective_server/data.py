@@ -7,7 +7,7 @@ from datetime import date, datetime
 from dateutil import parser
 from io import StringIO
 from perspective import Table
-from constants import STATE_URL, COUNTY_CONFIRMED_URL, COUNTY_DEATHS_URL, \
+from constants import STATE_URL, COUNTY_URL, \
                        STATE_POPULATION_PATH, COUNTY_POPULATION_PATH, \
                        COUNTY_UNEMPLOYMENT_PATH, US_STATE_ABBREVIATIONS, \
                        US_STATE_FULL_NAMES, STATE_GOVERNMENT_ALIGNMENT
@@ -63,33 +63,17 @@ class DataTransformer(object):
         return df
 
     @classmethod
-    def _clean_county_data(cls, confirmed, deaths):
-        # CSVs have a weird name for countyFIPS
-        confirmed_county_fips = "countyFIPS"
-
-        for col in confirmed.columns:
-            if "countyFIPS" in col:
-                confirmed_county_fips = col
-
-        # Each date is a column header, so transform them to row values with `.melt`
-        confirmed_df = confirmed.melt(id_vars=[confirmed_county_fips, "County Name", "State", "stateFIPS"]) \
-            .rename(columns={confirmed_county_fips: "County FIPS", "stateFIPS": "State FIPS", "variable": "Date", "value": "Confirmed", "County Name": "County"})
-
-        # Check for countyFIPS again
-        deaths_county_fips = "countyFIPS"
-
-        for col in deaths.columns:
-            if "countyFIPS" in col:
-                deaths_county_fips = col
-
-        deaths_df = deaths.melt(id_vars=[deaths_county_fips, "County Name", "State", "stateFIPS"]) \
-            .rename(columns={deaths_county_fips: "County FIPS", "stateFIPS": "State FIPS", "variable": "Date", "value": "Deaths", "County Name": "County"})
-
-        # Add full state names
-        confirmed_df["State Name"] = [US_STATE_FULL_NAMES.get(x, None) for x in confirmed_df["State"]]
-        deaths_df["State Name"] = [US_STATE_FULL_NAMES.get(x, None) for x in deaths_df["State"]]
-
-        county_df = confirmed_df.join(deaths_df["Deaths"])
+    def _clean_county_data(cls, data):
+        county_df = data.rename(columns={
+            "date": "Date",
+            "state": "State Name",
+            "fips": "County FIPS",
+            "county": "County",
+            "cases": "Confirmed",
+            "deaths": "Deaths"
+        })
+        county_df["State"] = [US_STATE_ABBREVIATIONS.get(x, None) for x in county_df["State Name"]]
+        county_df["Date"] = cls._localize_column(county_df["Date"])
         county_df.set_index(["County FIPS", "Date"])
 
         return county_df
@@ -138,9 +122,7 @@ class DataTransformer(object):
         to come), return a DataFrame containing the joined and cleaned
         dataset.
         """
-        confirmed = StringIO(requests.get(COUNTY_CONFIRMED_URL).text)
-        deaths = StringIO(requests.get(COUNTY_DEATHS_URL).text)
-        county_df = cls._clean_county_data(pd.read_csv(confirmed), pd.read_csv(deaths))
+        county_df = cls._clean_county_data(pd.read_csv(COUNTY_URL, error_bad_lines=False))
         logging.info("Finished cleaning county COVID data")
 
         # Augment with county-level population and unemployment
@@ -234,7 +216,6 @@ class DataHost(object):
 
         self.county_schema = {
             "County FIPS": int,
-            "State FIPS": int,
             "County": str,
             "State": str,
             "State Name": str,
@@ -261,3 +242,6 @@ class DataHost(object):
         self.county_table.update(self._county_data)
 
         logging.info("Tables updated with latest dataset")
+
+    def write_data_to_arrow(self):
+        pass

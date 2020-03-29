@@ -14,33 +14,52 @@
 
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
 
-    <script src="http://localhost:5000/static/perspective-viewer/umd/perspective-viewer.js"></script>
+    <script src="http://localhost:5000/static/perspective-workspace/umd/perspective-workspace.js"></script>
     <script src="http://localhost:5000/static/perspective-viewer-datagrid/umd/perspective-viewer-datagrid.js"></script>
     <script src="http://localhost:5000/static/perspective-viewer-highcharts/umd/perspective-viewer-highcharts.js"></script>
     <script src="http://localhost:5000/static/perspective-viewer-d3fc/umd/perspective-viewer-d3fc.js"></script>
-    <script src="http://localhost:5000/static/perspective/umd/perspective.js"></script>>
-
-    <link rel='stylesheet' href="http://localhost:5000/static/perspective-viewer/umd/material.css">
+    <script src="http://localhost:5000/static/perspective/umd/perspective.js"></script>
+    <link rel='stylesheet' href="http://localhost:5000/static/perspective-workspace/umd/material.css">
 
     <style>
-        perspective-viewer{position:absolute;top:0;left:0;right:0;bottom:0;}
-    </style>
 
+        body {
+            display: flex;
+            flex-direction: column;
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+        }
+    </style>
 </head>
 
 <body>
 
-    <perspective-viewer id="viewer"></perspective-viewer>
+    <perspective-workspace id="workspace"></perspective-workspace>
 
     <script>
 
-        window.addEventListener('WebComponentsReady', async function() {
-            // Create two perspective interfaces, one remotely via WebSocket, 
-            // and one local via WebWorker.
-            const websocket = perspective.websocket(
-                "ws://localhost:5000/ws");
+        const state_data = async (websocket) => {
             const worker = perspective.worker();
+            // Get a proxy for a view named "state_data_source", registered on
+            // the server with a reciprocal call to `host_view()`.
+            // No data is transferred, `view` is a virtual handle for data on
+            // the server.
+            const view = websocket.open_view('state_data_source');
 
+            // Create a `table` from this, owned by the local WebWorker.
+            // Data is transferred from `view` to the local WebWorker, both
+            // the current state and all future updates, as Arrows.
+            return worker.table(view);
+        };
+
+        const county_data = async (websocket) => {
+            const worker = perspective.worker();
             // Get a proxy for a view named "state_data_source", registered on
             // the server with a reciprocal call to `host_view()`.
             // No data is transferred, `view` is a virtual handle for data on
@@ -50,13 +69,65 @@
             // Create a `table` from this, owned by the local WebWorker.
             // Data is transferred from `view` to the local WebWorker, both
             // the current state and all future updates, as Arrows.
-            const table = worker.table(view);
-            
-            // Load this in the `<perspective-viewer>`.
-            document.getElementById('viewer').load(table);
-            viewer.toggleConfig();
-        });
+            return worker.table(view);
+        };
 
+
+        window.addEventListener("load", async () => {
+            const websocket = perspective.websocket("ws://localhost:5000/ws");
+            const state_datasource = await state_data(websocket);
+            const county_datasource = await county_data(websocket)
+            window.workspace.tables.set("state", state_datasource);
+            window.workspace.tables.set("county", county_datasource);
+
+            // const scatter_config = window.getPlugin("d3_xy_scatter");
+            // scatter_config.max_columns = 500;
+
+            // const area_config = window.getPlugin("d3_y_area");
+            // area_config.max_columns = 500;
+            // area_config.max_cells = 100000;
+
+            // const line_config = window.getPlugin("d3_y_line");
+            // line_config.max_columns = 500;
+            // line_config.max_cells = 100000;
+
+            await window.workspace.restore({
+                sizes: [0.4027196652719665, 0.5972803347280334],
+                detail: {
+                    main: {
+                        type: "split-area",
+                        orientation: "horizontal",
+                        children: [
+                            {
+                                type: "tab-area",
+                                widgets: ["One"],
+                                currentIndex: 0
+                            },
+                            {
+                                type: "tab-area",
+                                widgets: ["Two"],
+                                currentIndex: 0
+                            }
+                        ],
+                        sizes: [0.5, 0.5]
+                    }
+                },
+                mode: "globalFilters",
+                viewers: {
+                    One: {
+                        plugin: "datagrid",
+                        name: "State",
+                        table: "state"
+                    },
+                    Two: {
+                        plugin: "datagrid",
+                        name: "County",
+                        table: "county",
+                        "computed-columns": ['concat_comma("County", "State") as "Location"', "'Deaths' % 'Confirmed'"]
+                    }
+                }
+            });
+        });
     </script>
 
 </body>
