@@ -184,6 +184,7 @@ class DataHost(object):
             "Date": date,
             "Deaths": int,
             "Confirmed": int,
+            "Population (2019 Estimate)": int,
             "State": str,
             "State Name": str,
             "Governor": str,
