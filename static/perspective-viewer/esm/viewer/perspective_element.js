@@ -75,6 +75,7 @@ import perspective from "@finos/perspective";
 import { get_type_config } from "@finos/perspective/dist/esm/config";
 import { CancelTask } from "./cancel_task.js";
 import { StateElement } from "./state_element.js";
+import { expression_to_computed_column_config } from "../computed_expressions/visitor";
 /******************************************************************************
  *
  *  Helpers
@@ -243,14 +244,27 @@ export class PerspectiveElement extends StateElement {
     this._clear_state();
 
     this._table = table;
-    let [cols, schema] = await Promise.all([table.columns(), table.schema(true)]);
-
-    this._clear_columns(); // Initial col order never contains computed columns
-
+    let [cols, schema] = await Promise.all([table.columns(), table.schema(true)]); // Initial col order never contains computed columns
 
     this._initial_col_order = cols.slice(); // Already validated through the attribute API
 
-    const parsed_computed_columns = this._get_view_parsed_computed_columns();
+    let parsed_computed_columns = this._get_view_parsed_computed_columns();
+
+    if (parsed_computed_columns.length === 0) {
+      // Fallback for race condition on workspace - need to parse
+      // computed expressions, and assume that `parsed-computed-columns`
+      // will be set when the setAttribute callback fires
+      // *after* the table has been loaded.
+      const computed_expressions = this._get_view_computed_columns();
+
+      for (const expression of computed_expressions) {
+        if (typeof expression === "string") {
+          parsed_computed_columns = parsed_computed_columns.concat(expression_to_computed_column_config(expression));
+        } else {
+          parsed_computed_columns.push(expression);
+        }
+      }
+    }
 
     const computed_column_names = parsed_computed_columns.map(x => x.column);
     const computed_schema = await table.computed_schema(parsed_computed_columns);
@@ -275,7 +289,9 @@ export class PerspectiveElement extends StateElement {
       shown = this._initial_col_order;
     }
 
-    this._aggregate_defaults = get_aggregate_defaults(cols, schema, computed_schema);
+    this._aggregate_defaults = get_aggregate_defaults(cols, schema, computed_schema); // Clear the columns in the DOM before adding new ones
+
+    this._clear_columns();
 
     for (const name of cols) {
       let aggregate = aggregates.find(a => a.column === name).op;
