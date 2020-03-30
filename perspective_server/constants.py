@@ -3,8 +3,8 @@ import pandas as pd
 
 here = os.path.abspath(os.path.dirname(__file__))
 
-# State-level data from the COVID Tracking Project, county-level data from The New York Times
-STATE_URL = "https://covidtracking.com/api/states/daily"
+# Data from The New York Times
+STATE_URL = "https://raw.githubusercontent.com/nytimes/covid-19-data/master/us-states.csv"
 COUNTY_URL = "https://raw.githubusercontent.com/nytimes/covid-19-data/master/us-counties.csv"
 
 # Population and unemployment data from 2018, as that is the last best estimate. Datasets provided by the U.S. Census and the USDA.

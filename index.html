@@ -14,11 +14,11 @@
 
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
 
-    <script src="http://localhost:5000/static/perspective-workspace/umd/perspective-workspace.js"></script>
-    <script src="http://localhost:5000/static/perspective-viewer-datagrid/umd/perspective-viewer-datagrid.js"></script>
-    <script src="http://localhost:5000/static/perspective-viewer-highcharts/umd/perspective-viewer-highcharts.js"></script>
-    <script src="http://localhost:5000/static/perspective-viewer-d3fc/umd/perspective-viewer-d3fc.js"></script>
-    <script src="http://localhost:5000/static/perspective/umd/perspective.js"></script>
+    <script src="http://localhost:8080/perspective-workspace.js"></script>
+    <script src="http://localhost:8080/perspective-viewer-datagrid.js"></script>
+    <script src="http://localhost:8080/perspective-viewer-highcharts.js"></script>
+    <script src="http://localhost:8080/perspective-viewer-d3fc.js"></script>
+    <script src="http://localhost:8080/perspective.js"></script>
     <link rel='stylesheet' href="http://localhost:5000/static/perspective-workspace/umd/material.css">
 
     <style>
@@ -34,6 +34,11 @@
             margin: 0;
             padding: 0;
             overflow: hidden;
+        }
+
+        perspective-viewer {
+            --d3fc-legend--left: 75px;
+            --d3fc-legend--right: auto;
         }
     </style>
 </head>
@@ -87,9 +92,9 @@
             // area_config.max_columns = 500;
             // area_config.max_cells = 100000;
 
-            // const line_config = window.getPlugin("d3_y_line");
-            // line_config.max_columns = 500;
-            // line_config.max_cells = 100000;
+            const line_config = window.getPlugin("d3_y_line");
+            line_config.max_cells = 100000;
+            line_config.max_columns = 5000;
 
             await window.workspace.restore({
                 sizes: [0.4027196652719665, 0.5972803347280334],
@@ -117,12 +122,22 @@
                     One: {
                         plugin: "datagrid",
                         name: "State",
-                        table: "state"
+                        table: "state",
+                        columns: ["Confirmed"],
+                        "row-pivots": ["Date"],
+                        "filters": [["Date", ">", "03/10/2020"]],
+                        "column-pivots": ["State Name"],
+                        plugin: "d3_y_line"
                     },
                     Two: {
                         plugin: "datagrid",
                         name: "County",
                         table: "county",
+                        columns: ["Confirmed"],
+                        "row-pivots": ["Date"],
+                        "column-pivots": ["Location"],
+                        "filters": [["Date", ">", "03/10/2020"]],
+                        plugin: "d3_y_line",
                         "computed-columns": ['concat_comma("County", "State") as "Location"', "'Deaths' % 'Confirmed'"]
                     }
                 }

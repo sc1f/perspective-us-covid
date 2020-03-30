@@ -18,18 +18,6 @@ class DataTransformer(object):
     """Makes requests to the dataset APIs and outputs a DataFrame containing
     cleaned, transformed, and augmented data ready for Perspective."""
 
-    # Need to rename columns as they come out of the dataset
-    state_column_names = {
-        "date": "Date",
-        "dateChecked": "Date Checked",
-        "death": "Deaths",
-        "hospitalized": "Hospitalized",
-        "pending": "Pending",
-        "positive": "Positive",
-        "total": "Total",
-        "state": "State"
-    }
-
     EST = pytz.timezone("US/Eastern")
 
     @classmethod
@@ -43,24 +31,18 @@ class DataTransformer(object):
 
     @classmethod
     def _clean_state_data(cls, data):
-        for row in data:
-            # dates are stored as integer with no separators, so add separators and parse
-            d = list(str(row["date"]))
-            if "/" not in d:
-                d.insert(4, "/")
-                d.insert(7, "/")
-            row["date"] = "".join(d)
-            row["date"] = parser.parse(row["date"])
-            row["dateChecked"] = parser.parse(row["dateChecked"])
-
-        df = pd.DataFrame(data).rename(columns=cls.state_column_names)
-
+        state_df = data.rename(columns={
+            "date": "Date",
+            "state": "State Name",
+            "fips": "State FIPS",
+            "cases": "Confirmed",
+            "deaths": "Deaths"
+        })
         # Perspective treats times as UTC, but we want to normalize all times to EST
-        df["Date"] = cls._localize_column(df["Date"])
-        df["Date Checked"] = cls._localize_column(df["Date Checked"])
-        df["State Name"] = [US_STATE_FULL_NAMES.get(x, None) for x in df["State"]]
+        state_df["Date"] = cls._localize_column(state_df["Date"])
+        state_df["State"] = [US_STATE_ABBREVIATIONS.get(x, None) for x in state_df["State Name"]]
 
-        return df
+        return state_df
 
     @classmethod
     def _clean_county_data(cls, data):
@@ -95,7 +77,7 @@ class DataTransformer(object):
         state-level population data and return a DataFrame containing
         the joined and cleaned data.
         """
-        state_covid_df = cls._clean_state_data(requests.get(STATE_URL).json())
+        state_covid_df = cls._clean_state_data(pd.read_csv(STATE_URL, error_bad_lines=False))
 
         # Get and clean population data
         state_population_df = pd.read_csv(
@@ -200,15 +182,11 @@ class DataHost(object):
     def __init__(self):
         self.state_schema = {
             "Date": date,
-            "Date Checked": datetime,
             "Deaths": int,
-            "Hospitalized": int,
-            "Pending": int,
-            "Positive": int,
-            "Total": int,
+            "Confirmed": int,
+            "Population (2019 Estimate)": int,
             "State": str,
             "State Name": str,
-            "Population (2019 Estimate)": int,
             "Governor": str,
             "State Senate": str,
             "State House": str
