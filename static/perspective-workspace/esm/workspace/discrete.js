@@ -1,4 +1,3 @@
-import "core-js/modules/es.array.iterator";
 import "core-js/modules/web.dom-collections.iterator";
 
 /******************************************************************************
@@ -172,8 +171,8 @@ export class DiscreteSplitPanel extends extend(SplitPanel, "p-SplitPanel-handle"
 
   onResize(msg) {
     for (const widget of toArray(this.widgets)) {
-      widget.node.style.minWidth = "300px";
-      widget.node.style.minHeight = "200px";
+      widget.node.style.minWidth = `300px`;
+      widget.node.style.minHeight = `200px`;
     }
 
     super.onResize(msg);

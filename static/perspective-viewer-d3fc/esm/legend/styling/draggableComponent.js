@@ -1,9 +1,3 @@
-function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
-
-function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
-
-function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
-
 /******************************************************************************
  *
  * Copyright (c) 2017, the Perspective Authors.
@@ -31,13 +25,15 @@ export function draggableComponent() {
 
     const drag = d3.drag().on("drag", function () {
       const offsets = enforceContainerBoundaries(this, d3.event.dx, d3.event.dy);
-      this.style.left = "".concat(this.offsetLeft + offsets.x, "px");
-      this.style.top = "".concat(this.offsetTop + offsets.y, "px");
+      this.style.left = `${this.offsetLeft + offsets.x}px`;
+      this.style.top = `${this.offsetTop + offsets.y}px`;
       const position = {
         left: this.style.left,
         top: this.style.top
       };
-      settings.legend = _objectSpread({}, settings.legend, {}, position);
+      settings.legend = { ...settings.legend,
+        ...position
+      };
 
       if (isNodeInTopRight(node)) {
         pinned = pinNodeToTopRight(node);
@@ -68,8 +64,8 @@ function unpinNodeFromTopRight(node, pinned) {
     // cannot continue to use that css based approach.
     d3.select(window).on(resizeForDraggingEvent, function () {
       const offsets = enforceContainerBoundaries(node, 0, 0);
-      node.style.left = "".concat(node.offsetLeft + offsets.x, "px");
-      node.style.top = "".concat(node.offsetTop + offsets.y, "px");
+      node.style.left = `${node.offsetLeft + offsets.x}px`;
+      node.style.top = `${node.offsetTop + offsets.y}px`;
     });
   }
 

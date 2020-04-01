@@ -49,7 +49,7 @@ const chartFactory = (xAxis, yAxis, cartesian, canvas) => {
   const oldDecorate = chart.decorate();
   chart.decorate((container, data) => {
     const plotArea = container.select("d3fc-svg.plot-area");
-    plotArea.select("svg").node().setAttribute("viewBox", "0 0 ".concat(plotArea.node().clientWidth, " ").concat(plotArea.node().clientHeight));
+    plotArea.select("svg").node().setAttribute("viewBox", `0 0 ${plotArea.node().clientWidth} ${plotArea.node().clientHeight}`);
     oldDecorate(container, data);
     if (!axisSplitter) return;
 
@@ -65,14 +65,14 @@ const chartFactory = (xAxis, yAxis, cartesian, canvas) => {
       yAxisComponent.tickFormat(altAxis.tickFormatFunction);
       if (altAxis.decorate) yAxisComponent.decorate(altAxis.decorate); // Render the axis
 
-      y2AxisDataJoin(container, ["right"]).attr("class", d => "y-axis ".concat(d, "-axis")).on("measure", (d, i, nodes) => {
+      y2AxisDataJoin(container, ["right"]).attr("class", d => `y-axis ${d}-axis`).on("measure", (d, i, nodes) => {
         const {
           width,
           height
         } = d3.event.detail;
 
         if (d === "left") {
-          d3.select(nodes[i]).select("svg").attr("viewBox", "".concat(-width, " 0 ").concat(width, " ").concat(height));
+          d3.select(nodes[i]).select("svg").attr("viewBox", `${-width} 0 ${width} ${height}`);
         }
 
         y2Scale.range([height, 0]);

@@ -1,5 +1,3 @@
-import "core-js/modules/es.array.iterator";
-import "core-js/modules/es.object.assign";
 import "core-js/modules/web.dom-collections.iterator";
 
 /******************************************************************************
@@ -16,9 +14,9 @@ function _get_gradient(type) {
   let gradient;
 
   if (window.ShadyCSS) {
-    gradient = window.ShadyCSS.getComputedStyleValue(this, "--highcharts-".concat(type, "--gradient"));
+    gradient = window.ShadyCSS.getComputedStyleValue(this, `--highcharts-${type}--gradient`);
   } else {
-    gradient = getComputedStyle(this).getPropertyValue("--highcharts-".concat(type, "--gradient"));
+    gradient = getComputedStyle(this).getPropertyValue(`--highcharts-${type}--gradient`);
   }
 
   const parsed = gparser.parse(gradient)[0].colorStops;
@@ -26,12 +24,12 @@ function _get_gradient(type) {
     let color;
 
     if (x.type === "rgb") {
-      color = "rgb(".concat(x.value.join(","), ")");
+      color = `rgb(${x.value.join(",")})`;
     } else {
-      color = "#".concat(x.value);
+      color = `#${x.value}`;
     }
 
-    return [Number.parseFloat(x.length ? x.length.value / 100 : "".concat(i / (parsed.length - 1))), color];
+    return [Number.parseFloat(x.length ? x.length.value / 100 : `${i / (parsed.length - 1)}`), color];
   });
 }
 

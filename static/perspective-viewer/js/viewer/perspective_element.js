@@ -175,20 +175,20 @@ export class PerspectiveElement extends StateElement {
         // Already validated through the attribute API
         let parsed_computed_columns = this._get_view_parsed_computed_columns();
 
-        if (parsed_computed_columns.length === 0) {
-            // Fallback for race condition on workspace - need to parse
-            // computed expressions, and assume that `parsed-computed-columns`
-            // will be set when the setAttribute callback fires
-            // *after* the table has been loaded.
-            const computed_expressions = this._get_view_computed_columns();
-            for (const expression of computed_expressions) {
-                if (typeof expression === "string") {
-                    parsed_computed_columns = parsed_computed_columns.concat(expression_to_computed_column_config(expression));
-                } else {
-                    parsed_computed_columns.push(expression);
-                }
-            }
-        }
+        // if (parsed_computed_columns.length === 0) {
+        //     // Fallback for race condition on workspace - need to parse
+        //     // computed expressions, and assume that `parsed-computed-columns`
+        //     // will be set when the setAttribute callback fires
+        //     // *after* the table has been loaded.
+        //     const computed_expressions = this._get_view_computed_columns();
+        //     for (const expression of computed_expressions) {
+        //         if (typeof expression === "string") {
+        //             parsed_computed_columns = parsed_computed_columns.concat(expression_to_computed_column_config(expression));
+        //         } else {
+        //             parsed_computed_columns.push(expression);
+        //         }
+        //     }
+        // }
 
         const computed_column_names = parsed_computed_columns.map(x => x.column);
         const computed_schema = await table.computed_schema(parsed_computed_columns);

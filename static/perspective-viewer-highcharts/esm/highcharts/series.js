@@ -1,7 +1,3 @@
-import "core-js/modules/es.symbol.description";
-import "core-js/modules/es.array.iterator";
-import "core-js/modules/es.array.reverse";
-import "core-js/modules/es.string.split";
 import "core-js/modules/web.dom-collections.iterator";
 
 /******************************************************************************
@@ -703,7 +699,7 @@ function make_levels(row_pivots) {
         allowOverlap: true,
         style: {
           opacity: [1, 0.3][i] || 0,
-          fontSize: "".concat([14, 10][i] || 0, "px"),
+          fontSize: `${[14, 10][i] || 0}px`,
           textOutline: null
         }
       }

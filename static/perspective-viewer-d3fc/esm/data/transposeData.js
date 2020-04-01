@@ -1,4 +1,3 @@
-import "core-js/modules/es.array.iterator";
 import "core-js/modules/web.dom-collections.iterator";
 
 /******************************************************************************
@@ -9,7 +8,7 @@ import "core-js/modules/web.dom-collections.iterator";
  * the Apache License 2.0.  The full license can be found in the LICENSE file.
  *
  */
-export const transposeData = function transposeData(x) {
+export const transposeData = function (x) {
   const columns = [];
 
   for (const row of x) {

@@ -1,8 +1,3 @@
-import "core-js/modules/es.symbol.description";
-import "core-js/modules/es.array.iterator";
-import "core-js/modules/es.array.reverse";
-import "core-js/modules/es.promise";
-import "core-js/modules/es.regexp.to-string";
 import "core-js/modules/web.dom-collections.iterator";
 
 /******************************************************************************
@@ -60,10 +55,10 @@ export function registerElement(templateString, styleString, proto) {
   setTemplateContent(template);
 
   if (styleString) {
-    template.innerHTML = "<style>".concat(styleString.toString(), "</style>") + template.innerHTML;
+    template.innerHTML = `<style>${styleString.toString()}</style>` + template.innerHTML;
   }
 
-  template.innerHTML = "<style id=\"psp_styles\" scope=\"".concat(template.getAttribute("id"), "\">test{}</style>") + template.innerHTML;
+  template.innerHTML = `<style id="psp_styles" scope="${template.getAttribute("id")}">test{}</style>` + template.innerHTML;
 
   const _perspective_element = class extends proto {
     attributeChangedCallback(name, old, value) {
@@ -135,7 +130,7 @@ export function registerElement(templateString, styleString, proto) {
   }
 
   let name = template.getAttribute("id");
-  console.log("Registered ".concat(name));
+  console.log(`Registered ${name}`);
   window.customElements.define(name, _perspective_element);
 }
 export function bindTemplate(template, ...styleStrings) {
@@ -177,7 +172,7 @@ function _attribute(_default) {
 
         attr = JSON.parse(attr);
       } catch (e) {
-        console.warn("Invalid value for attribute \"".concat(name, "\": ").concat(x));
+        console.warn(`Invalid value for attribute "${name}": ${x}`);
         attr = _default();
       }
 

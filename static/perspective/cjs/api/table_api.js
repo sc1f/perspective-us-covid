@@ -1,9 +1,5 @@
 "use strict";
 
-require("core-js/modules/es.promise");
-
-require("core-js/modules/es.regexp.to-string");
-
 require("core-js/modules/es.string.replace");
 
 Object.defineProperty(exports, "__esModule", {
@@ -11,10 +7,6 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.table = table;
 exports.proxy_table = proxy_table;
-
-require("core-js/modules/es.promise");
-
-require("core-js/modules/es.regexp.to-string");
 
 require("core-js/modules/es.string.replace");
 

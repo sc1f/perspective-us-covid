@@ -1,6 +1,3 @@
-import "core-js/modules/es.array.iterator";
-import "core-js/modules/es.array.reverse";
-import "core-js/modules/es.promise";
 import "core-js/modules/web.dom-collections.iterator";
 
 var _dec, _class, _class2;
@@ -84,7 +81,7 @@ ComputedExpressionEditor = (_dec = bindTemplate(template, style), _dec(_class = 
 
         if (Array.isArray(parsed) && parsed.length > 4) {
           event.preventDefault();
-          this._expression_input.value += "\"".concat(parsed[0], "\"");
+          this._expression_input.value += `"${parsed[0]}"`;
         }
       } catch (e) {// regular text, don't do anything as browser will handle
       } finally {
@@ -146,7 +143,7 @@ ComputedExpressionEditor = (_dec = bindTemplate(template, style), _dec(_class = 
       let message = "TypeError:\n";
 
       for (const col of invalid) {
-        message += "- `".concat(col, "` expected input column types ").concat(expected_types[col].join("/"), "\n");
+        message += `- \`${col}\` expected input column types ${expected_types[col].join("/")}\n`;
       }
 
       this._disable_save_button();

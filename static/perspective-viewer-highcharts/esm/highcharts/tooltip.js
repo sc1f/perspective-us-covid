@@ -1,5 +1,3 @@
-import "core-js/modules/es.string.split";
-
 /******************************************************************************
  *
  * Copyright (c) 2017, the Perspective Authors.
@@ -32,7 +30,9 @@ export function format_tooltip(context, type, schema, axis_titles, pivot_titles)
 
     const axis_title = context.series.userOptions.stack;
     const axis_type = get_axis_type(axis_title, schema);
-    return "".concat(row_pivots_text, "\n                ").concat(column_pivot_text, "\n                <span>").concat(axis_title, ": </span><b>").concat(format_value(context.y, axis_type), "</b>");
+    return `${row_pivots_text}
+                ${column_pivot_text}
+                <span>${axis_title}: </span><b>${format_value(context.y, axis_type)}</b>`;
   } else if (type === "xy") {
     const has_x_values = value_exists(axis_titles[0]),
           has_y_values = value_exists(axis_titles[1]),
@@ -89,9 +89,9 @@ export function format_tooltip(context, type, schema, axis_titles, pivot_titles)
     const tooltip_text = [row_pivots_text, column_pivot_text, x_text, y_text, z_text, w_text, extra_text];
     return tooltip_text.join("");
   } else if (type === "xyz") {
-    return "<span>".concat(format_value(context.point.value), "</span>");
+    return `<span>${format_value(context.point.value)}</span>`;
   } else if (type === "hierarchy") {
-    return "<span>".concat(context.point.id, ": </span><b>").concat(format_value(context.x), "</b>");
+    return `<span>${context.point.id}: </span><b>${format_value(context.x)}</b>`;
   }
 
   let default_value;
@@ -106,7 +106,7 @@ function collate_single_value(title, raw_value, schema) {
    * columns not in aggregate but NOT in sort need to hide */
 
   if (formatted_value === "NaN" || formatted_value === null || formatted_value === undefined) return "";
-  return "<span>".concat(title, ": <b>").concat(formatted_value, "</b></span><br/>");
+  return `<span>${title}: <b>${formatted_value}</b></span><br/>`;
 }
 
 function collate_multiple_values(titles, values) {
@@ -114,7 +114,7 @@ function collate_multiple_values(titles, values) {
   let output = [];
 
   for (let i = 0; i < titles.length; i++) {
-    output.push("<span>".concat(titles[i], ": <b>").concat(values[i], "</b></span><br/>"));
+    output.push(`<span>${titles[i]}: <b>${values[i]}</b></span><br/>`);
   }
 
   return output.join("");

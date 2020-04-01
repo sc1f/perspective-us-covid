@@ -22,7 +22,7 @@ export function isElementOverflowing(containerRect, innerElementRect, direction 
     return containerRect[direction] > innerElementRect[direction] ? true : false;
   }
 
-  throw "Direction being checked for overflow is invalid: ".concat(direction);
+  throw `Direction being checked for overflow is invalid: ${direction}`;
 }
 export function isElementOverlapping(axis, immovableRect, elementRect, fuzz = 0) {
   const dimension = axis === "x" ? "width" : "height";

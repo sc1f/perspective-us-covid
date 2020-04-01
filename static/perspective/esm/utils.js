@@ -1,6 +1,3 @@
-import "core-js/modules/es.array.iterator";
-import "core-js/modules/es.string.includes";
-import "core-js/modules/es.string.match";
 import "core-js/modules/web.dom-collections.iterator";
 
 /******************************************************************************
@@ -31,7 +28,7 @@ export function get_column_type(val) {
   } else if (val === 13) {
     return "date";
   } else {
-    console.warn("Unknown type for value ".concat(val, " with JS type ").concat(typeof val));
+    console.warn(`Unknown type for value ${val} with JS type ${typeof val}`);
   }
 }
 /**
@@ -126,7 +123,7 @@ if (!String.prototype.includes) {
 
 if (!Array.prototype.includes) {
   Object.defineProperty(Array.prototype, "includes", {
-    value: function value(searchElement, fromIndex) {
+    value: function (searchElement, fromIndex) {
       if (this == null) {
         throw new TypeError('"this" is null or not defined');
       } // 1. Let O be ? ToObject(this value).

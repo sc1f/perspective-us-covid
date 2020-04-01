@@ -356,7 +356,8 @@ class PerspectiveViewer extends ActionElement {
     }
 
     /**
-     * Sets the currently selected plugin, via its `name` field.
+     * Sets the currently selected plugin, via its `name` field, and removes
+     * any children the previous plugin may have left behind in the light DOM.
      *
      * @type {string}
      * @fires PerspectiveViewer#perspective-config-update
@@ -366,7 +367,7 @@ class PerspectiveViewer extends ActionElement {
             this.setAttribute("plugin", this._vis_selector.options[0].value);
             return;
         }
-
+        this.innerHTML = "";
         const plugin_names = Object.keys(renderers.getInstance());
         if (this.hasAttribute("plugin")) {
             let plugin = this.getAttribute("plugin");

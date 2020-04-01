@@ -1,6 +1,4 @@
 import "core-js/modules/es.string.replace";
-import "core-js/modules/es.string.split";
-import "core-js/modules/es.string.trim";
 
 /******************************************************************************
  *
@@ -21,7 +19,7 @@ export class MenuRenderer extends Menu.Renderer {
   renderIcon(data) {
     let className = this.createIconClass(data);
     const name = data.item.command.split(":").pop();
-    const content = getComputedStyle(this.workspace).getPropertyValue("--menu-".concat(name, "--content")).replace(/['"]+/g, "").trim();
+    const content = getComputedStyle(this.workspace).getPropertyValue(`--menu-${name}--content`).replace(/['"]+/g, "").trim();
     return h.div({
       className,
       content

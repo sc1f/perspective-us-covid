@@ -1,19 +1,11 @@
 "use strict";
 
-require("core-js/modules/es.array.iterator");
-
-require("core-js/modules/es.promise");
-
 require("core-js/modules/web.dom-collections.iterator");
 
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.Server = void 0;
-
-require("core-js/modules/es.array.iterator");
-
-require("core-js/modules/es.promise");
 
 require("core-js/modules/web.dom-collections.iterator");
 
@@ -91,7 +83,7 @@ class Server {
       }
     }
 
-    console.debug("GC ".concat(Object.keys(this._views).length, " views in memory"));
+    console.debug(`GC ${Object.keys(this._views).length} views in memory`);
   }
   /**
    * Given a message, execute its instructions. This method is the dispatcher
@@ -198,9 +190,9 @@ class Server {
 
             this.post(result);
           } catch (e) {
-            console.error("Removing failed callback to `".concat(msg.method, "()` (presumably due to failed connection)"));
+            console.error(`Removing failed callback to \`${msg.method}()\` (presumably due to failed connection)`);
             const remove_method = msg.method.substring(3);
-            obj["remove_".concat(remove_method)](callback);
+            obj[`remove_${remove_method}`](callback);
           }
         };
 
@@ -216,7 +208,7 @@ class Server {
       if (callback) {
         obj[msg.method](callback, ...msg.args);
       } else {
-        console.error("Callback not found for remote call \"".concat(JSON.stringify(msg), "\""));
+        console.error(`Callback not found for remote call "${JSON.stringify(msg)}"`);
       }
     } catch (error) {
       this.process_error(msg, error);

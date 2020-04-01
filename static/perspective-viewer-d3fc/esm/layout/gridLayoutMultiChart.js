@@ -1,5 +1,3 @@
-import "core-js/modules/es.string.split";
-
 /******************************************************************************
  *
  * Copyright (c) 2017, the Perspective Authors.
@@ -36,11 +34,11 @@ export function gridLayoutMultiChart() {
       containerSize.height = containerHeight / rows;
     }
 
-    innerContainer.style("grid-template-columns", "repeat(".concat(cols, ", ").concat(containerSize.width, "px)"));
-    innerContainer.style("grid-template-rows", "repeat(".concat(rows, ", ").concat(containerSize.height, "px)"));
-    chartDiv = innerContainer.selectAll("div.".concat(elementsPrefix, "-container")).data(data, d => d.split);
+    innerContainer.style("grid-template-columns", `repeat(${cols}, ${containerSize.width}px)`);
+    innerContainer.style("grid-template-rows", `repeat(${rows}, ${containerSize.height}px)`);
+    chartDiv = innerContainer.selectAll(`div.${elementsPrefix}-container`).data(data, d => d.split);
     chartDiv.exit().remove();
-    chartEnter = chartDiv.enter().append("div").attr("class", "".concat(elementsPrefix, "-container"));
+    chartEnter = chartDiv.enter().append("div").attr("class", `${elementsPrefix}-container`);
     chartTitle = chartEnter.append("div").attr("class", "title-container").style("text-align", "center").attr("display", "inline-block").append("text").attr("class", "title").style("text-align", "left");
     chartContainer = chartEnter.append("svg").append("g").attr("class", elementsPrefix);
   };

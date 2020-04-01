@@ -1,6 +1,3 @@
-import "core-js/modules/es.string.includes";
-import "core-js/modules/es.string.split";
-
 /******************************************************************************
  *
  * Copyright (c) 2017, the Perspective Authors.
@@ -72,7 +69,7 @@ const needsToShrinkOrHide = (d, rectRect, textRect, direction) => {
     const fontSize = parseInt(select(d).style("font-size"));
 
     if (fontSize > minTextSize) {
-      select(d).style("font-size", "".concat(fontSize - 1, "px"));
+      select(d).style("font-size", `${fontSize - 1}px`);
       centerText(d);
       shrinkOrHideText(d);
     } else {

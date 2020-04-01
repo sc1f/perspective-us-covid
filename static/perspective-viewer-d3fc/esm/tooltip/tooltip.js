@@ -1,4 +1,3 @@
-import "core-js/modules/es.array.iterator";
 import "core-js/modules/web.dom-collections.iterator";
 
 /******************************************************************************
@@ -91,7 +90,7 @@ function showTooltip(containerNode, node, tooltipDiv, centered) {
   let left = rect.left + rect.width / 2 - containerRect.left;
   let top = rect.top - containerRect.top + containerNode.scrollTop;
   if (centered) top = rect.top + rect.height / 2 - containerRect.top + containerNode.scrollTop;
-  tooltipDiv.style("left", "".concat(left, "px")).style("top", "".concat(top, "px")).transition().duration(200).style("opacity", 0.9);
+  tooltipDiv.style("left", `${left}px`).style("top", `${top}px`).transition().duration(200).style("opacity", 0.9);
   if (centered) [left, top] = centerTip(tooltipDiv, containerRect);
   shiftIfOverflowingChartArea(tooltipDiv, containerRect, left, top, centered);
 }
@@ -100,10 +99,10 @@ function centerTip(tooltipDiv, containerRect) {
   const tooltipDivRect = tooltipDiv.node().getBoundingClientRect();
   const leftAdjust = tooltipDivRect.width / 2;
   const newLeft = tooltipDivRect.left - leftAdjust - containerRect.left;
-  tooltipDiv.style("left", "".concat(newLeft, "px"));
+  tooltipDiv.style("left", `${newLeft}px`);
   const topAdjust = tooltipDivRect.height / 2;
   const newTop = tooltipDivRect.top - topAdjust - containerRect.top;
-  tooltipDiv.style("top", "".concat(newTop, "px"));
+  tooltipDiv.style("top", `${newTop}px`);
   return [newLeft, newTop];
 }
 
@@ -112,24 +111,24 @@ function shiftIfOverflowingChartArea(tooltipDiv, containerRect, left, top, cente
 
   if (isElementOverflowing(containerRect, tooltipDivRect)) {
     const leftAdjust = tooltipDivRect.right - containerRect.right;
-    tooltipDiv.style("left", "".concat(left - leftAdjust, "px"));
+    tooltipDiv.style("left", `${left - leftAdjust}px`);
   }
 
   if (isElementOverflowing(containerRect, tooltipDivRect, "bottom")) {
     const topAdjust = tooltipDivRect.bottom - containerRect.bottom;
-    tooltipDiv.style("top", "".concat(top - topAdjust, "px"));
+    tooltipDiv.style("top", `${top - topAdjust}px`);
   }
 
   if (!centered) return;
 
   if (isElementOverflowing(containerRect, tooltipDivRect, "left")) {
     const leftAdjust = tooltipDivRect.left - containerRect.left;
-    tooltipDiv.style("left", "".concat(left - leftAdjust, "px"));
+    tooltipDiv.style("left", `${left - leftAdjust}px`);
   }
 
   if (isElementOverflowing(containerRect, tooltipDivRect, "top")) {
     const topAdjust = tooltipDivRect.top - containerRect.top;
-    tooltipDiv.style("top", "".concat(top - topAdjust, "px"));
+    tooltipDiv.style("top", `${top - topAdjust}px`);
   }
 }
 

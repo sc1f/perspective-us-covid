@@ -135,6 +135,10 @@ perspective-viewer,
   --highcharts-negative--gradient: linear-gradient(#feeb65 0%, #e4521b 35%, #4d342f 70%, #222222 100%);
   --warning--color: #333;
 }
+perspective-viewer table,
+.perspective-viewer-material-dark table {
+  color: #cfd8dc;
+}
 perspective-viewer tr td span.pd-tree-group,
 .perspective-viewer-material-dark tr td span.pd-tree-group {
   border-left: 1px solid #444;
@@ -187,6 +191,10 @@ perspective-viewer tbody:hover tr:hover td,
 perspective-viewer tbody:hover tr:hover td span,
 .perspective-viewer-material-dark tbody:hover tr:hover td span {
   background: #444;
+}
+perspective-viewer table tr:hover,
+.perspective-viewer-material-dark table tr:hover {
+  color: #ffffff;
 }
 
 

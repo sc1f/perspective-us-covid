@@ -1,4 +1,3 @@
-import "core-js/modules/es.array.iterator";
 import "core-js/modules/web.dom-collections.iterator";
 
 /******************************************************************************
@@ -37,7 +36,7 @@ export function colorRangeLegend() {
     const legendSvg = getOrCreateElement(legendSelection, "svg", () => legendSelection.append("svg")).style("width", width).style("height", height);
     const legendBar = getOrCreateElement(legendSvg, "g", () => legendSvg.append("g")).datum(expandedDomain).call(svgBar);
     const barWidth = Math.abs(legendBar.node().getBBox().x);
-    getOrCreateElement(legendSvg, "#legend-axis", () => legendSvg.append("g").attr("id", "legend-axis")).attr("transform", "translate(".concat(barWidth, ")")).datum(expandedDomain).call(axisLabel).select(".domain").attr("visibility", "hidden");
+    getOrCreateElement(legendSvg, "#legend-axis", () => legendSvg.append("g").attr("id", "legend-axis")).attr("transform", `translate(${barWidth})`).datum(expandedDomain).call(axisLabel).select(".domain").attr("visibility", "hidden");
   }
 
   legend.scale = (...args) => {

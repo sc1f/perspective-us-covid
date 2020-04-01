@@ -1,64 +1,6 @@
-import "core-js/modules/es.array.flat-map";
-import "core-js/modules/es.array.iterator";
-import "core-js/modules/es.array.sort";
 import "core-js/modules/es.array.unscopables.flat-map";
-import "core-js/modules/es.promise";
-import "core-js/modules/es.regexp.to-string";
-import "core-js/modules/es.string.includes";
 import "core-js/modules/es.string.replace";
 import "core-js/modules/web.dom-collections.iterator";
-
-function _templateObject5() {
-  const data = _taggedTemplateLiteral(["Rendering ", " of points."]);
-
-  _templateObject5 = function _templateObject5() {
-    return data;
-  };
-
-  return data;
-}
-
-function _templateObject4() {
-  const data = _taggedTemplateLiteral(["Rendering ", " of columns."]);
-
-  _templateObject4 = function _templateObject4() {
-    return data;
-  };
-
-  return data;
-}
-
-function _templateObject3() {
-  const data = _taggedTemplateLiteral(["Rendering ", " of columns and ", " of points."]);
-
-  _templateObject3 = function _templateObject3() {
-    return data;
-  };
-
-  return data;
-}
-
-function _templateObject2() {
-  const data = _taggedTemplateLiteral(["\n            <span style=\"white-space:nowrap\">", "</span>\n        "]);
-
-  _templateObject2 = function _templateObject2() {
-    return data;
-  };
-
-  return data;
-}
-
-function _templateObject() {
-  const data = _taggedTemplateLiteral(["\n            <span title=\"", " / ", "\" class=\"plugin_information--overflow-hint\">&nbsp;<span class=\"plugin_information--overflow-hint-percent\">", "%</span>&nbsp;</span>\n        "]);
-
-  _templateObject = function _templateObject() {
-    return data;
-  };
-
-  return data;
-}
-
-function _taggedTemplateLiteral(strings, raw) { if (!raw) { raw = strings.slice(0); } return Object.freeze(Object.defineProperties(strings, { raw: { value: Object.freeze(raw) } })); }
 
 /******************************************************************************
  *
@@ -146,7 +88,7 @@ function get_aggregates_with_defaults(aggregate_attribute, columns, schema, comp
 
       aggregates.push(col);
     } else {
-      console.warn("No column \"".concat(col.column, "\" found (specified in aggregates attribute)."));
+      console.warn(`No column "${col.column}" found (specified in aggregates attribute).`);
     }
   } // Add columns detected from dataset.
 
@@ -174,13 +116,17 @@ const _total_template = args => {
     const x = numberWithCommas(args[0]);
     const y = numberWithCommas(args[1]);
     const total = Math.floor(args[0] / args[1] * 100);
-    return html(_templateObject(), x, y, total);
+    return html`
+            <span title="${x} / ${y}" class="plugin_information--overflow-hint">&nbsp;<span class="plugin_information--overflow-hint-percent">${total}%</span>&nbsp;</span>
+        `;
   }
 };
 
 const _nowrap_template = text => {
   if (text !== "") {
-    return html(_templateObject2(), text);
+    return html`
+            <span style="white-space:nowrap">${text}</span>
+        `;
   }
 };
 /**
@@ -248,23 +194,21 @@ export class PerspectiveElement extends StateElement {
 
     this._initial_col_order = cols.slice(); // Already validated through the attribute API
 
-    let parsed_computed_columns = this._get_view_parsed_computed_columns();
+    let parsed_computed_columns = this._get_view_parsed_computed_columns(); // if (parsed_computed_columns.length === 0) {
+    //     // Fallback for race condition on workspace - need to parse
+    //     // computed expressions, and assume that `parsed-computed-columns`
+    //     // will be set when the setAttribute callback fires
+    //     // *after* the table has been loaded.
+    //     const computed_expressions = this._get_view_computed_columns();
+    //     for (const expression of computed_expressions) {
+    //         if (typeof expression === "string") {
+    //             parsed_computed_columns = parsed_computed_columns.concat(expression_to_computed_column_config(expression));
+    //         } else {
+    //             parsed_computed_columns.push(expression);
+    //         }
+    //     }
+    // }
 
-    if (parsed_computed_columns.length === 0) {
-      // Fallback for race condition on workspace - need to parse
-      // computed expressions, and assume that `parsed-computed-columns`
-      // will be set when the setAttribute callback fires
-      // *after* the table has been loaded.
-      const computed_expressions = this._get_view_computed_columns();
-
-      for (const expression of computed_expressions) {
-        if (typeof expression === "string") {
-          parsed_computed_columns = parsed_computed_columns.concat(expression_to_computed_column_config(expression));
-        } else {
-          parsed_computed_columns.push(expression);
-        }
-      }
-    }
 
     const computed_column_names = parsed_computed_columns.map(x => x.column);
     const computed_schema = await table.computed_schema(parsed_computed_columns);
@@ -393,22 +337,19 @@ export class PerspectiveElement extends StateElement {
       if (columns_are_truncated && rows_are_truncated) {
         this._plugin_information.classList.remove("hidden");
 
-        const warning = _warning(_templateObject3(), [max_cols, num_columns], [num_columns * max_rows, count]);
-
+        const warning = _warning`Rendering ${[max_cols, num_columns]} of columns and ${[num_columns * max_rows, count]} of points.`;
         render(warning, this._plugin_information_message);
         return true;
       } else if (columns_are_truncated) {
         this._plugin_information.classList.remove("hidden");
 
-        const warning = _warning(_templateObject4(), [max_cols, num_columns]);
-
+        const warning = _warning`Rendering ${[max_cols, num_columns]} of columns.`;
         render(warning, this._plugin_information_message);
         return true;
       } else if (rows_are_truncated) {
         this._plugin_information.classList.remove("hidden");
 
-        const warning = _warning(_templateObject5(), [num_columns * max_rows, count]);
-
+        const warning = _warning`Rendering ${[num_columns * max_rows, count]} of points.`;
         render(warning, this._plugin_information_message);
         return true;
       } else {
@@ -444,7 +385,7 @@ export class PerspectiveElement extends StateElement {
       timeout = parseInt(throttle);
 
       if (isNaN(timeout) || timeout < 0) {
-        console.warn("Bad throttle attribute value \"".concat(throttle, "\".  Can be (non-negative integer) milliseconds."));
+        console.warn(`Bad throttle attribute value "${throttle}".  Can be (non-negative integer) milliseconds.`);
         this.removeAttribute("throttle");
         return 0;
       }

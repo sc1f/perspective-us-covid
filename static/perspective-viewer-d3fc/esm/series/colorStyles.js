@@ -1,17 +1,3 @@
-import "core-js/modules/es.array.sort";
-
-function _templateObject() {
-  const data = _taggedTemplateLiteral(["--d3fc-gridline--color"]);
-
-  _templateObject = function _templateObject() {
-    return data;
-  };
-
-  return data;
-}
-
-function _taggedTemplateLiteral(strings, raw) { if (!raw) { raw = strings.slice(0); } return Object.freeze(Object.defineProperties(strings, { raw: { value: Object.freeze(raw) } })); }
-
 /******************************************************************************
  *
  * Copyright (c) 2017, the Perspective Authors.
@@ -27,7 +13,7 @@ export const initialiseStyles = (container, settings) => {
     const data = ["series"];
 
     for (let n = 1; n <= 10; n++) {
-      data.push("series-".concat(n));
+      data.push(`series-${n}`);
     }
 
     const styles = {
@@ -38,17 +24,17 @@ export const initialiseStyles = (container, settings) => {
     };
     const computed = computedStyle(container);
     data.forEach((d, i) => {
-      styles[d] = computed("--d3fc-".concat(d));
+      styles[d] = computed(`--d3fc-${d}`);
 
       if (i > 0) {
         styles.scheme.push(styles[d]);
       }
     });
     styles.opacity = getOpacityFromColor(styles.series);
-    styles.grid.gridLineColor = computed(_templateObject());
+    styles.grid.gridLineColor = computed`--d3fc-gridline--color`;
     const gradients = ["full", "positive", "negative"];
     gradients.forEach(g => {
-      const gradient = computed("--d3fc-".concat(g, "--gradient"));
+      const gradient = computed(`--d3fc-${g}--gradient`);
       styles.gradient[g] = parseGradient(gradient, styles.opacity);
     });
     settings.colorStyles = styles;
@@ -60,7 +46,7 @@ const getOpacityFromColor = color => {
 };
 
 const stepAsColor = (value, opacity) => {
-  const color = d3.color("#".concat(value));
+  const color = d3.color(`#${value}`);
   color.opacity = opacity;
   return color + "";
 };

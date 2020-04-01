@@ -1,15 +1,11 @@
 "use strict";
 
-require("core-js/modules/es.array.iterator");
-
 require("core-js/modules/web.dom-collections.iterator");
 
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.fill_vector = exports.extract_map = exports.extract_vector = void 0;
-
-require("core-js/modules/es.array.iterator");
 
 require("core-js/modules/web.dom-collections.iterator");
 
@@ -25,7 +21,7 @@ require("core-js/modules/web.dom-collections.iterator");
 /** Translation layer Interface between C++ and JS to handle conversions/data
  * structures that were previously handled in non-portable perspective.js
  */
-const extract_vector = function extract_vector(vector) {
+const extract_vector = function (vector) {
   // handles deletion already - do not call delete() on the input vector again
   let extracted = [];
 
@@ -40,7 +36,7 @@ const extract_vector = function extract_vector(vector) {
 
 exports.extract_vector = extract_vector;
 
-const extract_map = function extract_map(map) {
+const extract_map = function (map) {
   // handles deletion already - do not call delete() on the input map again
   let extracted = {};
   let keys = map.keys();
@@ -68,7 +64,7 @@ const extract_map = function extract_map(map) {
 
 exports.extract_map = extract_map;
 
-const fill_vector = function fill_vector(vector, arr) {
+const fill_vector = function (vector, arr) {
   for (const elem of arr) {
     vector.push_back(elem);
   }

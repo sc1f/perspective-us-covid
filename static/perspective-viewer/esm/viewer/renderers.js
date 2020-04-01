@@ -1,18 +1,4 @@
-import "core-js/modules/es.array.iterator";
-import "core-js/modules/es.promise";
 import "core-js/modules/web.dom-collections.iterator";
-
-function _templateObject() {
-  const data = _taggedTemplateLiteral(["\n        <pre style=\"margin:0;overflow:scroll;position:absolute;width:100%;height:100%\">", "</pre>\n    "]);
-
-  _templateObject = function _templateObject() {
-    return data;
-  };
-
-  return data;
-}
-
-function _taggedTemplateLiteral(strings, raw) { if (!raw) { raw = strings.slice(0); } return Object.freeze(Object.defineProperties(strings, { raw: { value: Object.freeze(raw) } })); }
 
 /******************************************************************************
  *
@@ -41,16 +27,16 @@ export const renderers = new class {
    */
   registerPlugin(name, plugin) {
     if (RENDERERS[name]) {
-      throw new Error("A perspective-viewer plugin \"".concat(name, "\" has already been registered"));
+      throw new Error(`A perspective-viewer plugin "${name}" has already been registered`);
     }
 
     for (const id in RENDERERS) {
       const old_plugin = RENDERERS[id];
 
       if (old_plugin && old_plugin.name === plugin.name) {
-        console.warn("Conflicting plugin name \"".concat(plugin.name, "\", qualifying with id"));
-        old_plugin.name = "".concat(old_plugin.name, " [").concat(id, "]");
-        plugin.name = "".concat(plugin.name, " [").concat(name, "]");
+        console.warn(`Conflicting plugin name "${plugin.name}", qualifying with id`);
+        old_plugin.name = `${old_plugin.name} [${id}]`;
+        plugin.name = `${plugin.name} [${name}]`;
       }
     }
 
@@ -73,12 +59,14 @@ if (global.__perspective_plugins__) {
   global.__perspective_plugins__.forEach(([name, plugin]) => global.registerPlugin(name, plugin));
 }
 
-const template = csv => html(_templateObject(), csv);
+const template = csv => html`
+        <pre style="margin:0;overflow:scroll;position:absolute;width:100%;height:100%">${csv}</pre>
+    `;
 
 export function register_debug_plugin() {
   global.registerPlugin("debug", {
     name: "Debug",
-    create: async function create(div) {
+    create: async function (div) {
       const csv = await this._view.to_csv({
         config: {
           delimiter: "|"
@@ -91,8 +79,8 @@ export function register_debug_plugin() {
       timer();
     },
     selectMode: "toggle",
-    resize: function resize() {},
-    delete: function _delete() {}
+    resize: function () {},
+    delete: function () {}
   });
 }
 //# sourceMappingURL=renderers.js.map

@@ -1,6 +1,3 @@
-import "core-js/modules/es.array.sort";
-import "core-js/modules/es.object.assign";
-
 /******************************************************************************
  *
  * Copyright (c) 2017, the Perspective Authors.

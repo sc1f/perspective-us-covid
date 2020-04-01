@@ -1,6 +1,3 @@
-import "core-js/modules/es.array.iterator";
-import "core-js/modules/es.array-buffer.slice";
-import "core-js/modules/es.promise";
 import "core-js/modules/es.string.replace";
 import "core-js/modules/web.dom-collections.iterator";
 
@@ -24,12 +21,14 @@ import wasm_worker from "./perspective.wasm.js";
 import wasm from "./psp.async.wasm.js";
 import { override_config } from "../../dist/esm/config/index.js"; // eslint-disable-next-line max-len
 
-const INLINE_WARNING = "Perspective has been compiled in INLINE mode.  While Perspective's runtime performance is not affected, you may see smaller assets size and faster engine initial load time using \"@finos/perspective-webpack-plugin\" to build your application.\n\nhttps://perspective.finos.org/docs/md/installation.html#-an-important-note-about-hosting";
+const INLINE_WARNING = `Perspective has been compiled in INLINE mode.  While Perspective's runtime performance is not affected, you may see smaller assets size and faster engine initial load time using "@finos/perspective-webpack-plugin" to build your application.
+
+https://perspective.finos.org/docs/md/installation.html#-an-important-note-about-hosting`;
 /**
  * Singleton WASM file download cache.
  */
 
-const _override = new class {
+const override = new class {
   _fetch(url) {
     return new Promise(resolve => {
       let wasmXHR = new XMLHttpRequest();
@@ -68,7 +67,6 @@ const _override = new class {
  * Workers.
  */
 
-
 class WebWorkerClient extends Client {
   constructor(config) {
     if (config) {
@@ -96,7 +94,7 @@ class WebWorkerClient extends Client {
     if (typeof WebAssembly === "undefined") {
       throw new Error("WebAssembly not supported. Support for ASM.JS has been removed as of 0.3.1.");
     } else {
-      [_worker, msg.buffer] = await Promise.all([_override.worker(), _override.wasm()]);
+      [_worker, msg.buffer] = await Promise.all([override.worker(), override.wasm()]);
     }
 
     for (var key in this._worker) {
@@ -158,7 +156,7 @@ const WORKER_SINGLETON = function () {
   let __WORKER__, __CONFIG__;
 
   return {
-    getInstance: function getInstance(config) {
+    getInstance: function (config) {
       if (__WORKER__ === undefined) {
         __WORKER__ = new WebWorkerClient(config);
       }
@@ -166,7 +164,7 @@ const WORKER_SINGLETON = function () {
       const config_str = JSON.stringify(config);
 
       if (__CONFIG__ && config_str !== __CONFIG__) {
-        throw new Error("Confiuration object for shared_worker() has changed - this is probably a bug in your application.");
+        throw new Error(`Confiuration object for shared_worker() has changed - this is probably a bug in your application.`);
       }
 
       __CONFIG__ = config_str;
@@ -185,7 +183,7 @@ if (document.currentScript && document.currentScript.hasAttribute("preload")) {
 }
 
 const mod = {
-  override: x => _override.set(x),
+  override: x => override.set(x),
 
   /**
    * Create a new WebWorkerClient instance. s

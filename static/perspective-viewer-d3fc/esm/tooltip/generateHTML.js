@@ -16,7 +16,7 @@ export function generateHtml(tooltipDiv, data, settings) {
 
 function addDataValues(tooltipDiv, values) {
   tooltipDiv.select("#tooltip-values").selectAll("li").data(values).join("li").each(function (d) {
-    select(this).text("".concat(d.name, ": ")).append("b").text(formatNumber(d.value));
+    select(this).text(`${d.name}: `).append("b").text(formatNumber(d.value));
   });
 }
 

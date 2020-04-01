@@ -1,4 +1,3 @@
-import "core-js/modules/es.array.iterator";
 import "core-js/modules/web.dom-collections.iterator";
 
 /******************************************************************************
@@ -13,7 +12,7 @@ import "core-js/modules/web.dom-collections.iterator";
 /** Translation layer Interface between C++ and JS to handle conversions/data
  * structures that were previously handled in non-portable perspective.js
  */
-export const extract_vector = function extract_vector(vector) {
+export const extract_vector = function (vector) {
   // handles deletion already - do not call delete() on the input vector again
   let extracted = [];
 
@@ -25,7 +24,7 @@ export const extract_vector = function extract_vector(vector) {
   vector.delete();
   return extracted;
 };
-export const extract_map = function extract_map(map) {
+export const extract_map = function (map) {
   // handles deletion already - do not call delete() on the input map again
   let extracted = {};
   let keys = map.keys();
@@ -50,7 +49,7 @@ export const extract_map = function extract_map(map) {
  * @private
  */
 
-export const fill_vector = function fill_vector(vector, arr) {
+export const fill_vector = function (vector, arr) {
   for (const elem of arr) {
     vector.push_back(elem);
   }

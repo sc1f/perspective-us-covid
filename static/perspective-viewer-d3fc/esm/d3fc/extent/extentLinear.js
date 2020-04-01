@@ -1,5 +1,3 @@
-import "core-js/modules/es.symbol.description";
-import "core-js/modules/es.array.iterator";
 import "core-js/modules/web.dom-collections.iterator";
 
 /******************************************************************************
@@ -12,7 +10,7 @@ import "core-js/modules/web.dom-collections.iterator";
  */
 import * as d3Array from "d3-array";
 import { defaultPadding } from "../padding/default";
-export const extentLinear = function extentLinear() {
+export const extentLinear = function () {
   let accessors = [function (d) {
     return d;
   }];
@@ -131,7 +129,7 @@ export const extentLinear = function extentLinear() {
   return instance;
 };
 
-let toConsumableArray = function toConsumableArray(arr) {
+let toConsumableArray = function (arr) {
   if (Array.isArray(arr)) {
     let arr2 = Array(arr.length);
 

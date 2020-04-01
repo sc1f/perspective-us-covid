@@ -1,4 +1,3 @@
-import "core-js/modules/es.array.iterator";
 import "core-js/modules/web.dom-collections.iterator";
 
 /******************************************************************************
@@ -273,7 +272,7 @@ const visitor = new ComputedExpressionColumnVisitor();
  * @param {String} expression
  */
 
-export const expression_to_computed_column_config = function expression_to_computed_column_config(expression) {
+export const expression_to_computed_column_config = function (expression) {
   const lex_result = lex(expression); // calling `parser.input` resets state.
 
   parser.input = lex_result.tokens;
@@ -281,7 +280,7 @@ export const expression_to_computed_column_config = function expression_to_compu
 
   if (parser.errors.length > 0) {
     let message = parser.errors.map(e => e.message);
-    throw new Error("".concat(message.join("\n")));
+    throw new Error(`${message.join("\n")}`);
   }
 
   return visitor.visit(cst);

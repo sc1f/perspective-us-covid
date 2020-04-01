@@ -1,5 +1,3 @@
-import "core-js/modules/es.string.split";
-
 /******************************************************************************
  *
  * Copyright (c) 2017, the Perspective Authors.
@@ -42,7 +40,7 @@ function splitByValuesIntoMultiSeries(settings, data, {
 
       const label = labels[labels.length - 1];
       const value = col[key] || 0;
-      const baseKey = "".concat(label).concat(value >= 0 ? "+ve" : "-ve"); // splitName="split1|split2"
+      const baseKey = `${label}${value >= 0 ? "+ve" : "-ve"}`; // splitName="split1|split2"
 
       const splitName = labels.slice(0, labels.length - 1).join("|"); // Combine aggregate values for the same split in a single
       // object
@@ -55,7 +53,7 @@ function splitByValuesIntoMultiSeries(settings, data, {
 
       if (stack) {
         splitValues[label] = baseValue + value;
-        splitValues["__BASE_VALUE__".concat(label)] = baseValue;
+        splitValues[`__BASE_VALUE__${label}`] = baseValue;
         baseValues[baseKey] = splitValues[label];
       } else {
         splitValues[label] = value;

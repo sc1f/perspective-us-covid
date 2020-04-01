@@ -1,6 +1,3 @@
-import "core-js/modules/es.array.iterator";
-import "core-js/modules/es.array.reverse";
-import "core-js/modules/es.string.split";
 import "core-js/modules/web.dom-collections.iterator";
 
 /******************************************************************************
@@ -84,7 +81,7 @@ export function treeData(settings) {
   });
   return data;
 }
-export const getDataValue = (d, aggregate, split) => split.length ? d["".concat(split, "|").concat(aggregate.name)] : d[aggregate.name];
+export const getDataValue = (d, aggregate, split) => split.length ? d[`${split}|${aggregate.name}`] : d[aggregate.name];
 
 function getExtents(settings, [split, data]) {
   if (settings.realValues.length > 1 && settings.realValues[1] !== null) {

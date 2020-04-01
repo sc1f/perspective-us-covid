@@ -1,22 +1,6 @@
 "use strict";
 
-require("core-js/modules/es.array.iterator");
-
-require("core-js/modules/es.array-buffer.slice");
-
-require("core-js/modules/es.promise");
-
-require("core-js/modules/es.regexp.constructor");
-
-require("core-js/modules/es.regexp.flags");
-
-require("core-js/modules/es.regexp.to-string");
-
 require("core-js/modules/es.string.replace");
-
-require("core-js/modules/es.string.split");
-
-require("core-js/modules/es.string.starts-with");
 
 require("core-js/modules/es.typed-array.float32-array");
 
@@ -35,8 +19,6 @@ require("core-js/modules/es.typed-array.uint8-clamped-array");
 require("core-js/modules/es.typed-array.uint16-array");
 
 require("core-js/modules/es.typed-array.uint32-array");
-
-require("core-js/modules/es.typed-array.to-locale-string");
 
 require("core-js/modules/web.dom-collections.iterator");
 
@@ -81,7 +63,7 @@ var load_perspective = function () {
       x = __dirname + "/";
       var ia, ja;
 
-      fa = function fa(a, b) {
+      fa = function (a, b) {
         ia || (ia = require("fs"));
         ja || (ja = require("path"));
         a = ja.normalize(a);
@@ -89,7 +71,7 @@ var load_perspective = function () {
         return b ? a : a.toString();
       };
 
-      ha = function ha(a) {
+      ha = function (a) {
         a = fa(a, !0);
         a.buffer || (a = new Uint8Array(a));
         a.buffer || y("Assertion failed: undefined");
@@ -103,28 +85,28 @@ var load_perspective = function () {
       });
       process.on("unhandledRejection", y);
 
-      ba = function ba(a) {
+      ba = function (a) {
         process.exit(a);
       };
 
       e.inspect = function () {
         return "[Emscripten Module object]";
       };
-    } else if (ea) "undefined" != typeof read && (fa = function fa(a) {
+    } else if (ea) "undefined" != typeof read && (fa = function (a) {
       return read(a);
-    }), ha = function ha(a) {
+    }), ha = function (a) {
       if ("function" === typeof readbuffer) return new Uint8Array(readbuffer(a));
       a = read(a, "binary");
       "object" === typeof a || y("Assertion failed: undefined");
       return a;
-    }, "undefined" != typeof scriptArgs ? u = scriptArgs : "undefined" != typeof arguments && (u = arguments), "function" === typeof quit && (ba = function ba(a) {
+    }, "undefined" != typeof scriptArgs ? u = scriptArgs : "undefined" != typeof arguments && (u = arguments), "function" === typeof quit && (ba = function (a) {
       quit(a);
-    }), "undefined" !== typeof print && ("undefined" === typeof console && (console = {}), console.log = print, console.warn = console.error = "undefined" !== typeof printErr ? printErr : print);else if (v || w) w ? x = self.location.href : document.currentScript && (x = document.currentScript.src), _scriptDir && (x = _scriptDir), 0 !== x.indexOf("blob:") ? x = x.substr(0, x.lastIndexOf("/") + 1) : x = "", fa = function fa(a) {
+    }), "undefined" !== typeof print && ("undefined" === typeof console && (console = {}), console.log = print, console.warn = console.error = "undefined" !== typeof printErr ? printErr : print);else if (v || w) w ? x = self.location.href : document.currentScript && (x = document.currentScript.src), _scriptDir && (x = _scriptDir), 0 !== x.indexOf("blob:") ? x = x.substr(0, x.lastIndexOf("/") + 1) : x = "", fa = function (a) {
       var b = new XMLHttpRequest();
       b.open("GET", a, !1);
       b.send(null);
       return b.responseText;
-    }, w && (ha = function ha(a) {
+    }, w && (ha = function (a) {
       var b = new XMLHttpRequest();
       b.open("GET", a, !1);
       b.responseType = "arraybuffer";
@@ -352,7 +334,7 @@ var load_perspective = function () {
       } catch (b) {}
     }];
     Ga.push({
-      U: function U() {
+      U: function () {
         Ta();
       }
     });
@@ -623,19 +605,19 @@ var load_perspective = function () {
     }
 
     function vb(a) {
-      if ("undefined" === typeof FinalizationGroup) return vb = function vb(a) {
+      if ("undefined" === typeof FinalizationGroup) return vb = function (a) {
         return a;
       }, a;
       sb = new FinalizationGroup(function (a) {
         for (var b = a.next(); !b.done; b = a.next()) b = b.value, b.c ? ub(b) : console.warn("object already deleted: " + b.c);
       });
 
-      vb = function vb(a) {
+      vb = function (a) {
         sb.register(a, a.a, a.a);
         return a;
       };
 
-      tb = function tb(a) {
+      tb = function (a) {
         sb.unregister(a.a);
       };
 
@@ -1167,102 +1149,102 @@ var load_perspective = function () {
       var t = "Sunday Monday Tuesday Wednesday Thursday Friday Saturday".split(" "),
           J = "January February March April May June July August September October November December".split(" ");
       l = {
-        "%a": function a(_a) {
-          return t[_a.K].substring(0, 3);
+        "%a": function (a) {
+          return t[a.K].substring(0, 3);
         },
-        "%A": function A(a) {
+        "%A": function (a) {
           return t[a.K];
         },
-        "%b": function b(a) {
+        "%b": function (a) {
           return J[a.A].substring(0, 3);
         },
-        "%B": function B(a) {
+        "%B": function (a) {
           return J[a.A];
         },
-        "%C": function C(a) {
+        "%C": function (a) {
           return g((a.h + 1900) / 100 | 0, 2);
         },
-        "%d": function d(a) {
+        "%d": function (a) {
           return g(a.C, 2);
         },
-        "%e": function e(a) {
+        "%e": function (a) {
           return f(a.C, 2, " ");
         },
-        "%g": function g(a) {
+        "%g": function (a) {
           return p(a).toString().substring(2);
         },
-        "%G": function G(a) {
+        "%G": function (a) {
           return p(a);
         },
-        "%H": function H(a) {
+        "%H": function (a) {
           return g(a.J, 2);
         },
-        "%I": function I(a) {
+        "%I": function (a) {
           a = a.J;
           0 == a ? a = 12 : 12 < a && (a -= 12);
           return g(a, 2);
         },
-        "%j": function j(a) {
+        "%j": function (a) {
           return g(a.C + kc(jc(a.h + 1900) ? lc : mc, a.A - 1), 3);
         },
-        "%m": function m(a) {
+        "%m": function (a) {
           return g(a.A + 1, 2);
         },
-        "%M": function M(a) {
+        "%M": function (a) {
           return g(a.sa, 2);
         },
-        "%n": function n() {
+        "%n": function () {
           return "\n";
         },
-        "%p": function p(a) {
+        "%p": function (a) {
           return 0 <= a.J && 12 > a.J ? "AM" : "PM";
         },
-        "%S": function S(a) {
+        "%S": function (a) {
           return g(a.ta, 2);
         },
-        "%t": function t() {
+        "%t": function () {
           return "\t";
         },
-        "%u": function u(a) {
+        "%u": function (a) {
           return a.K || 7;
         },
-        "%U": function U(a) {
+        "%U": function (a) {
           var b = new Date(a.h + 1900, 0, 1),
               c = 0 === b.getDay() ? b : nc(b, 7 - b.getDay());
           a = new Date(a.h + 1900, a.A, a.C);
           return 0 > k(c, a) ? g(Math.ceil((31 - c.getDate() + (kc(jc(a.getFullYear()) ? lc : mc, a.getMonth() - 1) - 31) + a.getDate()) / 7), 2) : 0 === k(c, b) ? "01" : "00";
         },
-        "%V": function V(a) {
+        "%V": function (a) {
           var b = h(new Date(a.h + 1900, 0, 4)),
               c = h(new Date(a.h + 1901, 0, 4)),
               d = nc(new Date(a.h + 1900, 0, 1), a.L);
           return 0 > k(d, b) ? "53" : 0 >= k(c, d) ? "01" : g(Math.ceil((b.getFullYear() < a.h + 1900 ? a.L + 32 - b.getDate() : a.L + 1 - b.getDate()) / 7), 2);
         },
-        "%w": function w(a) {
+        "%w": function (a) {
           return a.K;
         },
-        "%W": function W(a) {
+        "%W": function (a) {
           var b = new Date(a.h, 0, 1),
               c = 1 === b.getDay() ? b : nc(b, 0 === b.getDay() ? 1 : 7 - b.getDay() + 1);
           a = new Date(a.h + 1900, a.A, a.C);
           return 0 > k(c, a) ? g(Math.ceil((31 - c.getDate() + (kc(jc(a.getFullYear()) ? lc : mc, a.getMonth() - 1) - 31) + a.getDate()) / 7), 2) : 0 === k(c, b) ? "01" : "00";
         },
-        "%y": function y(a) {
+        "%y": function (a) {
           return (a.h + 1900).toString().substring(2);
         },
-        "%Y": function Y(a) {
+        "%Y": function (a) {
           return a.h + 1900;
         },
-        "%z": function z(a) {
+        "%z": function (a) {
           a = a.ra;
           var b = 0 <= a;
           a = Math.abs(a) / 60;
           return (b ? "+" : "-") + String("0000" + (a / 60 * 100 + a % 60)).slice(-4);
         },
-        "%Z": function Z(a) {
+        "%Z": function (a) {
           return a.ua;
         },
-        "%%": function _() {
+        "%%": function () {
           return "%";
         }
       };
@@ -1419,10 +1401,10 @@ var load_perspective = function () {
       return null;
     };
 
-    ca ? ic = function ic() {
+    ca ? ic = function () {
       var a = process.hrtime();
       return 1E3 * a[0] + a[1] / 1E6;
-    } : "undefined" !== typeof dateNow ? ic = dateNow : "object" === typeof performance && performance && "function" === typeof performance.now ? ic = function ic() {
+    } : "undefined" !== typeof dateNow ? ic = dateNow : "object" === typeof performance && performance && "function" === typeof performance.now ? ic = function () {
       return performance.now();
     } : ic = Date.now;
 
@@ -1433,22 +1415,22 @@ var load_perspective = function () {
     }
 
     var vc = {
-      __cxa_allocate_exception: function __cxa_allocate_exception(a) {
+      __cxa_allocate_exception: function (a) {
         return sc(a);
       },
-      __cxa_atexit: function __cxa_atexit() {
+      __cxa_atexit: function () {
         return Ua.apply(null, arguments);
       },
-      __cxa_throw: function __cxa_throw(a) {
+      __cxa_throw: function (a) {
         "uncaught_exception" in tc ? tc.M++ : tc.M = 1;
         throw a;
       },
-      __lock: function __lock() {},
-      __map_file: function __map_file() {
+      __lock: function () {},
+      __map_file: function () {
         Va(63);
         return -1;
       },
-      __syscall10: function __syscall10(a, b) {
+      __syscall10: function (a, b) {
         H = b;
 
         try {
@@ -1459,11 +1441,11 @@ var load_perspective = function () {
           return y(d), -d.v;
         }
       },
-      __syscall163: function __syscall163(a, b) {
+      __syscall163: function (a, b) {
         H = b;
         return -48;
       },
-      __syscall192: function __syscall192(a, b) {
+      __syscall192: function (a, b) {
         H = b;
 
         try {
@@ -1538,7 +1520,7 @@ var load_perspective = function () {
           return y(Qb), -Qb.v;
         }
       },
-      __syscall194: function __syscall194(a, b) {
+      __syscall194: function (a, b) {
         H = b;
 
         try {
@@ -1552,11 +1534,11 @@ var load_perspective = function () {
           return y(f), -f.v;
         }
       },
-      __syscall221: function __syscall221(a, b) {
+      __syscall221: function (a, b) {
         H = b;
         return 0;
       },
-      __syscall5: function __syscall5(a, b) {
+      __syscall5: function (a, b) {
         H = b;
 
         try {
@@ -1568,11 +1550,11 @@ var load_perspective = function () {
           return y(g), -g.v;
         }
       },
-      __syscall54: function __syscall54(a, b) {
+      __syscall54: function (a, b) {
         H = b;
         return 0;
       },
-      __syscall91: function __syscall91(a, b) {
+      __syscall91: function (a, b) {
         H = b;
 
         try {
@@ -1596,26 +1578,26 @@ var load_perspective = function () {
           return y(h), -h.v;
         }
       },
-      __unlock: function __unlock() {},
-      __wasi_environ_get: function __wasi_environ_get() {
+      __unlock: function () {},
+      __wasi_environ_get: function () {
         return $a.apply(null, arguments);
       },
-      __wasi_environ_sizes_get: function __wasi_environ_sizes_get() {
+      __wasi_environ_sizes_get: function () {
         return ab.apply(null, arguments);
       },
-      __wasi_fd_close: function __wasi_fd_close() {
+      __wasi_fd_close: function () {
         return bb.apply(null, arguments);
       },
-      __wasi_fd_read: function __wasi_fd_read() {
+      __wasi_fd_read: function () {
         return cb.apply(null, arguments);
       },
-      __wasi_fd_seek: function __wasi_fd_seek() {
+      __wasi_fd_seek: function () {
         return db.apply(null, arguments);
       },
-      __wasi_fd_write: function __wasi_fd_write() {
+      __wasi_fd_write: function () {
         return eb.apply(null, arguments);
       },
-      _embind_finalize_value_object: function _embind_finalize_value_object(a) {
+      _embind_finalize_value_object: function (a) {
         var b = fb[a];
         delete fb[a];
         var c = b.O,
@@ -1636,10 +1618,10 @@ var load_perspective = function () {
                 p = b.na,
                 La = b.pa;
             g[b.Z] = {
-              read: function read(a) {
+              read: function (a) {
                 return d.fromWireType(h(k, a));
               },
-              write: function write(a, b) {
+              write: function (a, b) {
                 var c = [];
                 p(La, a, l.toWireType(c, b));
                 gb(c);
@@ -1648,7 +1630,7 @@ var load_perspective = function () {
           });
           return [{
             name: b.name,
-            fromWireType: function fromWireType(a) {
+            fromWireType: function (a) {
               var b = {},
                   c;
 
@@ -1657,7 +1639,7 @@ var load_perspective = function () {
               d(a);
               return b;
             },
-            toWireType: function toWireType(a, b) {
+            toWireType: function (a, b) {
               for (var f in g) if (!(f in b)) throw new TypeError("Missing field");
 
               var h = c();
@@ -1673,26 +1655,26 @@ var load_perspective = function () {
           }];
         });
       },
-      _embind_register_bool: function _embind_register_bool(a, b, c, d, f) {
+      _embind_register_bool: function (a, b, c, d, f) {
         var g = ob(c);
         b = P(b);
         O(a, {
           name: b,
-          fromWireType: function fromWireType(a) {
+          fromWireType: function (a) {
             return !!a;
           },
-          toWireType: function toWireType(a, b) {
+          toWireType: function (a, b) {
             return b ? d : f;
           },
           argPackAdvance: 8,
-          readValueFromPointer: function readValueFromPointer(a) {
+          readValueFromPointer: function (a) {
             if (1 === c) var d = C;else if (2 === c) d = ya;else if (4 === c) d = D;else throw new TypeError("Unknown boolean type size: " + b);
             return this.fromWireType(d[a >> g]);
           },
           j: null
         });
       },
-      _embind_register_class: function _embind_register_class(a, b, c, d, f, g, k, h, p, l, n, t, J) {
+      _embind_register_class: function (a, b, c, d, f, g, k, h, p, l, n, t, J) {
         n = P(n);
         g = W(f, g);
         h && (h = W(k, h));
@@ -1735,7 +1717,7 @@ var load_perspective = function () {
           return [c, f, t];
         });
       },
-      _embind_register_class_constructor: function _embind_register_class_constructor(a, b, c, d, f, g) {
+      _embind_register_class_constructor: function (a, b, c, d, f, g) {
         var k = Sb(b, c);
         f = W(d, f);
         N([], [a], function (a) {
@@ -1767,7 +1749,7 @@ var load_perspective = function () {
           return [];
         });
       },
-      _embind_register_class_function: function _embind_register_class_function(a, b, c, d, f, g, k, h) {
+      _embind_register_class_function: function (a, b, c, d, f, g, k, h) {
         var p = Sb(c, d);
         b = P(b);
         g = W(f, g);
@@ -1790,16 +1772,16 @@ var load_perspective = function () {
           return [];
         });
       },
-      _embind_register_emval: function _embind_register_emval(a, b) {
+      _embind_register_emval: function (a, b) {
         b = P(b);
         O(a, {
           name: b,
-          fromWireType: function fromWireType(a) {
+          fromWireType: function (a) {
             var b = Y[a].value;
             Wb(a);
             return b;
           },
-          toWireType: function toWireType(a, b) {
+          toWireType: function (a, b) {
             return U(b);
           },
           argPackAdvance: 8,
@@ -1807,7 +1789,7 @@ var load_perspective = function () {
           j: null
         });
       },
-      _embind_register_enum: function _embind_register_enum(a, b, c, d) {
+      _embind_register_enum: function (a, b, c, d) {
         function f() {}
 
         c = ob(c);
@@ -1816,10 +1798,10 @@ var load_perspective = function () {
         O(a, {
           name: b,
           constructor: f,
-          fromWireType: function fromWireType(a) {
+          fromWireType: function (a) {
             return this.constructor.values[a];
           },
-          toWireType: function toWireType(a, b) {
+          toWireType: function (a, b) {
             return b.value;
           },
           argPackAdvance: 8,
@@ -1828,7 +1810,7 @@ var load_perspective = function () {
         });
         Bb(b, f);
       },
-      _embind_register_enum_value: function _embind_register_enum_value(a, b, c) {
+      _embind_register_enum_value: function (a, b, c) {
         var d = Yb(a, "enum");
         b = P(b);
         a = d.constructor;
@@ -1843,15 +1825,15 @@ var load_perspective = function () {
         a.values[c] = d;
         a[b] = d;
       },
-      _embind_register_float: function _embind_register_float(a, b, c) {
+      _embind_register_float: function (a, b, c) {
         c = ob(c);
         b = P(b);
         O(a, {
           name: b,
-          fromWireType: function fromWireType(a) {
+          fromWireType: function (a) {
             return a;
           },
-          toWireType: function toWireType(a, b) {
+          toWireType: function (a, b) {
             if ("number" !== typeof b && "boolean" !== typeof b) throw new TypeError('Cannot convert "' + T(b) + '" to ' + this.name);
             return b;
           },
@@ -1860,7 +1842,7 @@ var load_perspective = function () {
           j: null
         });
       },
-      _embind_register_function: function _embind_register_function(a, b, c, d, f, g) {
+      _embind_register_function: function (a, b, c, d, f, g) {
         var k = Sb(b, c);
         a = P(a);
         f = W(d, f);
@@ -1873,7 +1855,7 @@ var load_perspective = function () {
           return [];
         });
       },
-      _embind_register_integer: function _embind_register_integer(a, b, c, d, f) {
+      _embind_register_integer: function (a, b, c, d, f) {
         function g(a) {
           return a;
         }
@@ -1885,7 +1867,7 @@ var load_perspective = function () {
         if (0 === d) {
           var h = 32 - 8 * c;
 
-          g = function g(a) {
+          g = function (a) {
             return a << h >>> h;
           };
         }
@@ -1894,7 +1876,7 @@ var load_perspective = function () {
         O(a, {
           name: b,
           fromWireType: g,
-          toWireType: function toWireType(a, c) {
+          toWireType: function (a, c) {
             if ("number" !== typeof c && "boolean" !== typeof c) throw new TypeError('Cannot convert "' + T(c) + '" to ' + this.name);
             if (c < d || c > f) throw new TypeError('Passing a number "' + T(c) + '" from JS side to C/C++ side to an argument of type "' + b + '", which is outside the valid range [' + d + ", " + f + "]!");
             return p ? c >>> 0 : c | 0;
@@ -1904,7 +1886,7 @@ var load_perspective = function () {
           j: null
         });
       },
-      _embind_register_memory_view: function _embind_register_memory_view(a, b, c) {
+      _embind_register_memory_view: function (a, b, c) {
         function d(a) {
           a >>= 2;
           var b = E;
@@ -1922,7 +1904,7 @@ var load_perspective = function () {
           ga: !0
         });
       },
-      _embind_register_smart_ptr: function _embind_register_smart_ptr(a, b, c, d, f, g, k, h, p, l, n, t) {
+      _embind_register_smart_ptr: function (a, b, c, d, f, g, k, h, p, l, n, t) {
         c = P(c);
         g = W(f, g);
         h = W(k, h);
@@ -1933,12 +1915,12 @@ var load_perspective = function () {
           return [new V(c, a.b, !1, !1, !0, a, d, g, h, l, t)];
         });
       },
-      _embind_register_std_string: function _embind_register_std_string(a, b) {
+      _embind_register_std_string: function (a, b) {
         b = P(b);
         var c = "std::string" === b;
         O(a, {
           name: b,
-          fromWireType: function fromWireType(a) {
+          fromWireType: function (a) {
             var b = E[a >> 2];
 
             if (c) {
@@ -1969,7 +1951,7 @@ var load_perspective = function () {
             X(a);
             return l;
           },
-          toWireType: function toWireType(a, b) {
+          toWireType: function (a, b) {
             b instanceof ArrayBuffer && (b = new Uint8Array(b));
             var d = "string" === typeof b;
             d || b instanceof Uint8Array || b instanceof Uint8ClampedArray || b instanceof Int8Array || R("Cannot pass non-string to std::string");
@@ -1990,33 +1972,33 @@ var load_perspective = function () {
           },
           argPackAdvance: 8,
           readValueFromPointer: hb,
-          j: function j(a) {
+          j: function (a) {
             X(a);
           }
         });
       },
-      _embind_register_std_wstring: function _embind_register_std_wstring(a, b, c) {
+      _embind_register_std_wstring: function (a, b, c) {
         c = P(c);
 
         if (2 === b) {
-          var d = function d() {
+          var d = function () {
             return za;
           };
 
           var f = 1;
-        } else 4 === b && (d = function d() {
+        } else 4 === b && (d = function () {
           return E;
         }, f = 2);
 
         O(a, {
           name: c,
-          fromWireType: function fromWireType(a) {
+          fromWireType: function (a) {
             for (var b = d(), c = E[a >> 2], g = Array(c), l = a + 4 >> f, n = 0; n < c; ++n) g[n] = String.fromCharCode(b[l + n]);
 
             X(a);
             return g.join("");
           },
-          toWireType: function toWireType(a, c) {
+          toWireType: function (a, c) {
             var g = c.length,
                 k = sc(4 + g * b),
                 l = d();
@@ -2029,12 +2011,12 @@ var load_perspective = function () {
           },
           argPackAdvance: 8,
           readValueFromPointer: hb,
-          j: function j(a) {
+          j: function (a) {
             X(a);
           }
         });
       },
-      _embind_register_value_object: function _embind_register_value_object(a, b, c, d, f, g) {
+      _embind_register_value_object: function (a, b, c, d, f, g) {
         fb[a] = {
           name: P(b),
           O: W(c, d),
@@ -2042,7 +2024,7 @@ var load_perspective = function () {
           T: []
         };
       },
-      _embind_register_value_object_field: function _embind_register_value_object_field(a, b, c, d, f, g, k, h, p, l) {
+      _embind_register_value_object_field: function (a, b, c, d, f, g, k, h, p, l) {
         fb[a].T.push({
           Z: P(b),
           fa: c,
@@ -2053,17 +2035,17 @@ var load_perspective = function () {
           pa: l
         });
       },
-      _embind_register_void: function _embind_register_void(a, b) {
+      _embind_register_void: function (a, b) {
         b = P(b);
         O(a, {
           ha: !0,
           name: b,
           argPackAdvance: 0,
-          fromWireType: function fromWireType() {},
-          toWireType: function toWireType() {}
+          fromWireType: function () {},
+          toWireType: function () {}
         });
       },
-      _emval_as: function _emval_as(a, b, c) {
+      _emval_as: function (a, b, c) {
         a = Z(a);
         b = Yb(b, "emval::as");
         var d = [],
@@ -2071,7 +2053,7 @@ var load_perspective = function () {
         D[c >> 2] = f;
         return b.toWireType(d, a);
       },
-      _emval_call: function _emval_call(a, b, c, d) {
+      _emval_call: function (a, b, c, d) {
         a = Z(a);
         c = ac(b, c);
 
@@ -2084,7 +2066,7 @@ var load_perspective = function () {
         a = a.apply(void 0, f);
         return U(a);
       },
-      _emval_call_method: function _emval_call_method(a, b, c, d, f) {
+      _emval_call_method: function (a, b, c, d, f) {
         a = dc[a];
         b = Z(b);
         c = cc(c);
@@ -2092,19 +2074,19 @@ var load_perspective = function () {
         D[d >> 2] = U(g);
         return a(b, c, g, f);
       },
-      _emval_call_void_method: function _emval_call_void_method(a, b, c, d) {
+      _emval_call_void_method: function (a, b, c, d) {
         a = dc[a];
         b = Z(b);
         c = cc(c);
         a(b, c, null, d);
       },
       _emval_decref: Wb,
-      _emval_get_global: function _emval_get_global(a) {
+      _emval_get_global: function (a) {
         if (0 === a) return U(ec());
         a = cc(a);
         return U(ec()[a]);
       },
-      _emval_get_method_caller: function _emval_get_method_caller(a, b) {
+      _emval_get_method_caller: function (a, b) {
         b = ac(a, b);
 
         for (var c = b[0], d = c.name + "_$" + b.slice(1).map(function (a) {
@@ -2125,24 +2107,24 @@ var load_perspective = function () {
         a = Tb(f).apply(null, g);
         return fc(a);
       },
-      _emval_get_module_property: function _emval_get_module_property(a) {
+      _emval_get_module_property: function (a) {
         a = cc(a);
         return U(e[a]);
       },
-      _emval_get_property: function _emval_get_property(a, b) {
+      _emval_get_property: function (a, b) {
         a = Z(a);
         b = Z(b);
         return U(a[b]);
       },
-      _emval_incref: function _emval_incref(a) {
+      _emval_incref: function (a) {
         4 < a && (Y[a].P += 1);
       },
-      _emval_instanceof: function _emval_instanceof(a, b) {
+      _emval_instanceof: function (a, b) {
         a = Z(a);
         b = Z(b);
         return a instanceof b;
       },
-      _emval_new: function _emval_new(a, b, c, d) {
+      _emval_new: function (a, b, c, d) {
         a = Z(a);
         var f = hc[b];
 
@@ -2161,41 +2143,41 @@ var load_perspective = function () {
 
         return f(a, c, d);
       },
-      _emval_new_cstring: function _emval_new_cstring(a) {
+      _emval_new_cstring: function (a) {
         return U(cc(a));
       },
-      _emval_new_object: function _emval_new_object() {
+      _emval_new_object: function () {
         return U({});
       },
-      _emval_run_destructors: function _emval_run_destructors(a) {
+      _emval_run_destructors: function (a) {
         gb(Y[a].value);
         Wb(a);
       },
-      _emval_set_property: function _emval_set_property(a, b, c) {
+      _emval_set_property: function (a, b, c) {
         a = Z(a);
         b = Z(b);
         c = Z(c);
         a[b] = c;
       },
-      _emval_take_value: function _emval_take_value(a, b) {
+      _emval_take_value: function (a, b) {
         a = Yb(a, "_emval_take_value");
         a = a.readValueFromPointer(b);
         return U(a);
       },
-      _emval_typeof: function _emval_typeof(a) {
+      _emval_typeof: function (a) {
         a = Z(a);
         return U(typeof a);
       },
-      abort: function abort() {
+      abort: function () {
         y();
       },
-      clock_gettime: function clock_gettime(a, b) {
+      clock_gettime: function (a, b) {
         if (0 === a) a = Date.now();else if (1 === a && (ca || "undefined" !== typeof dateNow || "object" === typeof performance && performance && "function" === typeof performance.now)) a = ic();else return Va(28), -1;
         D[b >> 2] = a / 1E3 | 0;
         D[b + 4 >> 2] = a % 1E3 * 1E6 | 0;
         return 0;
       },
-      emscripten_asm_const_iii: function emscripten_asm_const_iii(a, b, c) {
+      emscripten_asm_const_iii: function (a, b, c) {
         var d = [];
 
         a: for (var f = "";;) {
@@ -2213,13 +2195,13 @@ var load_perspective = function () {
 
         return Sa[a].apply(null, d);
       },
-      emscripten_get_sbrk_ptr: function emscripten_get_sbrk_ptr() {
+      emscripten_get_sbrk_ptr: function () {
         return 101680;
       },
-      emscripten_memcpy_big: function emscripten_memcpy_big(a, b, c) {
+      emscripten_memcpy_big: function (a, b, c) {
         B.set(B.subarray(b, b + c), a);
       },
-      emscripten_resize_heap: function emscripten_resize_heap(a) {
+      emscripten_resize_heap: function (a) {
         if (2147418112 < a) return !1;
 
         for (var b = Math.max(C.length, 16777216); b < a;) 536870912 >= b ? b = xa(2 * b) : b = Math.min(xa((3 * b + 2147483648) / 4), 2147418112);
@@ -2237,11 +2219,11 @@ var load_perspective = function () {
 
         return c ? !0 : !1;
       },
-      getpagesize: function getpagesize() {
+      getpagesize: function () {
         return 16384;
       },
       memory: A,
-      nanosleep: function nanosleep(a, b) {
+      nanosleep: function (a, b) {
         if (0 === a) return Va(28), -1;
         var c = D[a >> 2];
         a = D[a + 4 >> 2];
@@ -2251,8 +2233,8 @@ var load_perspective = function () {
         if ((v || w) && self.performance && self.performance.now) for (c = self.performance.now(); self.performance.now() - c < b;);else for (c = Date.now(); Date.now() - c < b;);
         return 0;
       },
-      setTempRet0: function setTempRet0() {},
-      strftime_l: function strftime_l(a, b, c, d) {
+      setTempRet0: function () {},
+      strftime_l: function (a, b, c, d) {
         return oc(a, b, c, d);
       },
       table: oa

@@ -1,11 +1,5 @@
 "use strict";
 
-require("core-js/modules/es.array.iterator");
-
-require("core-js/modules/es.string.includes");
-
-require("core-js/modules/es.string.match");
-
 require("core-js/modules/web.dom-collections.iterator");
 
 Object.defineProperty(exports, "__esModule", {
@@ -17,12 +11,6 @@ exports.detectNode = detectNode;
 exports.detectChrome = detectChrome;
 exports.detect_iphone = detect_iphone;
 exports.detectIE = void 0;
-
-require("core-js/modules/es.array.iterator");
-
-require("core-js/modules/es.string.includes");
-
-require("core-js/modules/es.string.match");
 
 require("core-js/modules/web.dom-collections.iterator");
 
@@ -54,7 +42,7 @@ function get_column_type(val) {
   } else if (val === 13) {
     return "date";
   } else {
-    console.warn("Unknown type for value ".concat(val, " with JS type ").concat(typeof val));
+    console.warn(`Unknown type for value ${val} with JS type ${typeof val}`);
   }
 }
 /**
@@ -157,7 +145,7 @@ if (!String.prototype.includes) {
 
 if (!Array.prototype.includes) {
   Object.defineProperty(Array.prototype, "includes", {
-    value: function value(searchElement, fromIndex) {
+    value: function (searchElement, fromIndex) {
       if (this == null) {
         throw new TypeError('"this" is null or not defined');
       } // 1. Let O be ? ToObject(this value).

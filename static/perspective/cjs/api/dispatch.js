@@ -1,9 +1,5 @@
 "use strict";
 
-require("core-js/modules/es.array.iterator");
-
-require("core-js/modules/es.promise");
-
 require("core-js/modules/web.dom-collections.iterator");
 
 Object.defineProperty(exports, "__esModule", {
@@ -12,10 +8,6 @@ Object.defineProperty(exports, "__esModule", {
 exports.unsubscribe = unsubscribe;
 exports.subscribe = subscribe;
 exports.async_queue = async_queue;
-
-require("core-js/modules/es.array.iterator");
-
-require("core-js/modules/es.promise");
 
 require("core-js/modules/web.dom-collections.iterator");
 

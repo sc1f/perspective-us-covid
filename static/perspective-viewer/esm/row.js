@@ -1,43 +1,6 @@
-import "core-js/modules/es.array.iterator";
-import "core-js/modules/es.regexp.to-string";
-import "core-js/modules/es.string.match";
-import "core-js/modules/es.string.split";
-import "core-js/modules/es.string.trim";
 import "core-js/modules/web.dom-collections.iterator";
 
 var _dec, _class;
-
-function _templateObject3() {
-  const data = _taggedTemplateLiteral(["\n            ", " ", "\n        "]);
-
-  _templateObject3 = function _templateObject3() {
-    return data;
-  };
-
-  return data;
-}
-
-function _templateObject2() {
-  const data = _taggedTemplateLiteral(["\n            <optgroup label=\"weighted mean\">\n                ", "\n            </optgroup>\n        "]);
-
-  _templateObject2 = function _templateObject2() {
-    return data;
-  };
-
-  return data;
-}
-
-function _templateObject() {
-  const data = _taggedTemplateLiteral(["\n            <option value=\"", "\" data-desc=\"", "\">", "</option>\n        "]);
-
-  _templateObject = function _templateObject() {
-    return data;
-  };
-
-  return data;
-}
-
-function _taggedTemplateLiteral(strings, raw) { if (!raw) { raw = strings.slice(0); } return Object.freeze(Object.defineProperties(strings, { raw: { value: Object.freeze(raw) } })); }
 
 function _CustomElement() {
   return Reflect.construct(HTMLElement, [], this.__proto__.constructor);
@@ -74,7 +37,7 @@ function get_text_width(text, max = 0) {
   // FIXME get these values form the stylesheet
   SPAN.innerHTML = text;
   document.body.appendChild(SPAN);
-  const width = "".concat(Math.max(max, SPAN.offsetWidth) + 20, "px");
+  const width = `${Math.max(max, SPAN.offsetWidth) + 20}px`;
   document.body.removeChild(SPAN);
   return width;
 } // Eslint complains here because we don't do anything, but actually we globally
@@ -91,14 +54,22 @@ Row = (_dec = bindTemplate(template, {
   }
 
   _option_template(agg, name) {
-    return html(_templateObject(), agg, name, name || agg);
+    return html`
+            <option value="${agg}" data-desc="${name}">${name || agg}</option>
+        `;
   }
 
   _select_template(category, type) {
     const items = perspective[category][type] || [];
-    const weighted_options = html(_templateObject2(), this._weights.map(x => this._option_template(JSON.stringify(["weighted mean", x]), x)));
+    const weighted_options = html`
+            <optgroup label="weighted mean">
+                ${this._weights.map(x => this._option_template(JSON.stringify(["weighted mean", x]), x))}
+            </optgroup>
+        `;
     const has_weighted_mean = category === "TYPE_AGGREGATES" && (type === "integer" || type === "float");
-    return html(_templateObject3(), items.map(x => this._option_template(x)), has_weighted_mean ? weighted_options : nothing);
+    return html`
+            ${items.map(x => this._option_template(x))} ${has_weighted_mean ? weighted_options : nothing}
+        `;
   }
 
   set_weights(xs) {
@@ -146,13 +117,13 @@ Row = (_dec = bindTemplate(template, {
       list: choices,
       minChars: 0,
       autoFirst: true,
-      filter: function filter(text, input) {
+      filter: function (text, input) {
         return Awesomplete.FILTER_CONTAINS(text, input.match(/[^,]*$/)[0]);
       },
-      item: function item(text, input) {
+      item: function (text, input) {
         return Awesomplete.ITEM(text, input.match(/[^,]*$/)[0]);
       },
-      replace: function replace(text) {
+      replace: function (text) {
         const before = this.input.value.match(/^.+,\s*|/)[0];
 
         if (filter_operator.value === "in" || filter_operator.value === "not in") {
@@ -302,7 +273,7 @@ Row = (_dec = bindTemplate(template, {
     if (this._agg_dropdown.value[0] === "[") {
       for (const option of this._agg_dropdown.querySelectorAll("optgroup option")) {
         const name = option.getAttribute("data-desc");
-        option.innerHTML = "mean by ".concat(name);
+        option.innerHTML = `mean by ${name}`;
       }
     }
   }
@@ -310,7 +281,7 @@ Row = (_dec = bindTemplate(template, {
   _focus_agg_dropdown() {
     for (const option of this._agg_dropdown.querySelectorAll("optgroup option")) {
       const name = option.getAttribute("data-desc");
-      option.innerHTML = "by ".concat(name);
+      option.innerHTML = `by ${name}`;
     }
   }
 

@@ -13,7 +13,7 @@ const multiAxis = (orient, baseAxis, scale) => {
   const groupDataJoin = dataJoin("g", "group");
   const domainPathDataJoin = dataJoin("path", "domain");
 
-  const translate = (x, y) => isVertical() ? "translate(".concat(y, ", ").concat(x, ")") : "translate(".concat(x, ", ").concat(y, ")");
+  const translate = (x, y) => isVertical() ? `translate(${y}, ${x})` : `translate(${x}, ${y})`;
 
   const pathTranspose = arr => isVertical() ? arr.map(d => [d[1], d[0]]) : arr;
 

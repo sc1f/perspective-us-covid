@@ -1,4 +1,3 @@
-import "core-js/modules/es.array.iterator";
 import "core-js/modules/web.dom-collections.iterator";
 
 /******************************************************************************
@@ -35,7 +34,7 @@ export default ((series, settings) => {
   let mainGrid = mainGridSvg(settings);
   let crossGrid = crossGridSvg;
 
-  const _withGridLines = function _withGridLines(...args) {
+  const _withGridLines = function (...args) {
     if (canvas) {
       seriesMulti = fc.seriesCanvasMulti().context(context);
       annotationGridline = fc.annotationCanvasGridline();

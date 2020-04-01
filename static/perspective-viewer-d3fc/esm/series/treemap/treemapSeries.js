@@ -1,5 +1,3 @@
-import "core-js/modules/es.array.sort";
-
 /******************************************************************************
  *
  * Copyright (c) 2017, the Perspective Authors.
@@ -46,7 +44,7 @@ export function treemapSeries() {
     nodesEnter.append("text"); // Draw child nodes first
 
     const nodesMerge = nodesEnter.merge(nodes).sort((a, b) => b.depth - a.depth);
-    const rects = nodesMerge.select("rect").attr("class", d => "treerect ".concat(nodeLevelHelper(maxDepth, d))).style("x", d => d.x0).style("y", d => d.y0).style("width", d => calcWidth(d)).style("height", d => calcHeight(d));
+    const rects = nodesMerge.select("rect").attr("class", d => `treerect ${nodeLevelHelper(maxDepth, d)}`).style("x", d => d.x0).style("y", d => d.y0).style("width", d => calcWidth(d)).style("height", d => calcHeight(d));
     color && rects.style("fill", d => color(d.data.color));
     const labels = nodesMerge.filter(d => d.value !== 0).select("text").attr("x", d => d.x0 + calcWidth(d) / 2).attr("y", d => d.y0 + calcHeight(d) / 2).text(d => d.data.name);
     const rootNode = rects.filter(d => d.crossValue === "").datum();

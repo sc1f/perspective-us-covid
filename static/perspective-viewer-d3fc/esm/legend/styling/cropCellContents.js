@@ -21,7 +21,7 @@ export function cropCellContents(legendDiv) {
 
     if (isElementOverflowing(legendDivRect, cell.getBoundingClientRect())) {
       const cutoffCharIndex = getCutoffCharacterIndex(cell, svg, legendDivRect);
-      return "".concat(d.substring(0, cutoffCharIndex - 3), "...");
+      return `${d.substring(0, cutoffCharIndex - 3)}...`;
     } else {
       return d;
     }

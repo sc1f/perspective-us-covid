@@ -1,4 +1,3 @@
-import "core-js/modules/es.array.iterator";
 import "core-js/modules/web.dom-collections.iterator";
 
 /******************************************************************************
@@ -158,7 +157,7 @@ const PLUGINS = {
       names: ["Size", "Color"]
     },
     selectMode: "toggle",
-    delete: function _delete() {},
+    delete: function () {},
     max_cells: MAX_CELL_COUNT["treemap"],
     max_columns: MAX_COLUMN_COUNT["treemap"]
   },
@@ -174,7 +173,7 @@ const PLUGINS = {
       names: ["Size", "Color"]
     },
     selectMode: "toggle",
-    delete: function _delete() {},
+    delete: function () {},
     max_cells: MAX_CELL_COUNT["sunburst"],
     max_columns: MAX_COLUMN_COUNT["sunburst"]
   },

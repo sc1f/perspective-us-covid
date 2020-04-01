@@ -1,5 +1,3 @@
-import "core-js/modules/es.string.includes";
-
 /******************************************************************************
  *
  * Copyright (c) 2017, the Perspective Authors.

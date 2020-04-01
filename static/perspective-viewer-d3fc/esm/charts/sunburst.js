@@ -1,5 +1,3 @@
-import "core-js/modules/es.string.split";
-
 /******************************************************************************
  *
  * Copyright (c) 2017, the Perspective Authors.
@@ -40,7 +38,7 @@ function sunburst(container, settings) {
   sunburstTitle.each((d, i, nodes) => select(nodes[i]).text(d.split));
   sunburstContainer.append("circle").attr("fill", "none").attr("pointer-events", "all");
   sunburstContainer.append("text").attr("class", "parent");
-  sunburstEnter.merge(sunburstDiv).select("svg").select("g.sunburst").attr("transform", "translate(".concat(containerSize.width / 2, ", ").concat(containerSize.height / 2, ")")).each(function ({
+  sunburstEnter.merge(sunburstDiv).select("svg").select("g.sunburst").attr("transform", `translate(${containerSize.width / 2}, ${containerSize.height / 2})`).each(function ({
     split,
     data
   }) {

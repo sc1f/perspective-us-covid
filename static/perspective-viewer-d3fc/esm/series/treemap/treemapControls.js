@@ -16,7 +16,7 @@ export function parentControls(container) {
   const parent = getOrCreateElement(container, ".parent-controls", () => container.append("div").attr("class", "parent-controls").style("display", hide ? "none" : "").html(template));
 
   const controls = () => {
-    parent.style("display", hide ? "none" : "").select("#goto-parent").style("pointer-events", deactivated ? "none" : null).html("\u21EA ".concat(text)).on("click", () => onClick());
+    parent.style("display", hide ? "none" : "").select("#goto-parent").style("pointer-events", deactivated ? "none" : null).html(`⇪ ${text}`).on("click", () => onClick());
   };
 
   controls.deactivate = (...args) => {

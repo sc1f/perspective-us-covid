@@ -1,7 +1,5 @@
 "use strict";
 
-require("core-js/modules/es.array.iterator");
-
 require("core-js/modules/web.dom-collections.iterator");
 
 Object.defineProperty(exports, "__esModule", {
@@ -9,8 +7,6 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.is_valid_date = is_valid_date;
 exports.DateParser = exports.DATE_PARSE_CANDIDATES = void 0;
-
-require("core-js/modules/es.array.iterator");
 
 require("core-js/modules/web.dom-collections.iterator");
 
@@ -87,7 +83,7 @@ class DateParser {
         return new Date(val);
       }
 
-      throw new Error("Unparseable date ".concat(val));
+      throw new Error(`Unparseable date ${val}`);
     }
   }
 

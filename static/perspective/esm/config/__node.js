@@ -1,9 +1,3 @@
-require("core-js/modules/es.array.iterator");
-
-require("core-js/modules/es.string.ends-with");
-
-require("core-js/modules/es.string.split");
-
 require("core-js/modules/web.dom-collections.iterator");
 
 /******************************************************************************
@@ -25,7 +19,7 @@ module.exports.default = function get_config_file() {
 
   while (curr.length > 0) {
     for (const name of NAMES) {
-      const candidate = "".concat(root).concat(path.sep).concat(path.join(...curr, name));
+      const candidate = `${root}${path.sep}${path.join(...curr, name)}`;
 
       if (fs.existsSync(candidate)) {
         if (name.endsWith("json")) {

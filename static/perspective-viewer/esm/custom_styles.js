@@ -1,6 +1,3 @@
-import "core-js/modules/es.symbol.description";
-import "core-js/modules/es.array.iterator";
-import "core-js/modules/es.string.trim";
 import "core-js/modules/web.dom-collections.iterator";
 
 /******************************************************************************
@@ -49,8 +46,8 @@ function get_font(elem, title) {
     title += "--";
   }
 
-  const font_size = get_style(elem, "".concat(title, "font-size"));
-  const font_family = get_style(elem, "".concat(title, "font-family")); // FIXME this sucks but it is difficult to partially apply fonts in
+  const font_size = get_style(elem, `${title}font-size`);
+  const font_family = get_style(elem, `${title}font-family`); // FIXME this sucks but it is difficult to partially apply fonts in
   // Hypergrid's API Fonts will not be picked up unless both font-size and
   // font-family are defined for a specific scope.
 
@@ -58,7 +55,7 @@ function get_font(elem, title) {
     return undefined;
   }
 
-  return "".concat(font_size, " ").concat(font_family);
+  return `${font_size} ${font_family}`;
 }
 
 function copy_defined(source, dest, f) {
@@ -96,7 +93,7 @@ function calc_rec(result, type, elem, types, iter, f) {
     copy_defined(props, result[type], name => f(elem, name));
 
     for (const parent of types[type]) {
-      copy_defined(props, result[type], name => f(elem, "--".concat(parent).concat(name)));
+      copy_defined(props, result[type], name => f(elem, `--${parent}${name}`));
     }
   }
 }

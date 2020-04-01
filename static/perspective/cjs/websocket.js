@@ -1,19 +1,11 @@
 "use strict";
 
-require("core-js/modules/es.array.iterator");
-
-require("core-js/modules/es.promise");
-
 require("core-js/modules/web.dom-collections.iterator");
 
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.WebSocketManager = exports.WebSocketClient = void 0;
-
-require("core-js/modules/es.array.iterator");
-
-require("core-js/modules/es.promise");
 
 require("core-js/modules/web.dom-collections.iterator");
 
@@ -143,7 +135,7 @@ class WebSocketManager extends _server.Server {
       try {
         // Send all messages to the handler defined in
         // Perspective.Server
-        const compoundId = "".concat(msg.id, "/").concat(ws.id);
+        const compoundId = `${msg.id}/${ws.id}`;
         this.requests_id_map.set(compoundId, msg.id);
         msg.id = compoundId;
         this.requests[msg.id] = {
@@ -201,7 +193,7 @@ class WebSocketManager extends _server.Server {
 
   _host(cache, name, input) {
     if (cache[name] !== undefined) {
-      throw new Error("\"".concat(name, "\" already exists"));
+      throw new Error(`"${name}" already exists`);
     }
 
     input.on_delete(() => {

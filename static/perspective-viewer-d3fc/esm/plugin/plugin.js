@@ -1,13 +1,4 @@
-import "core-js/modules/es.symbol.description";
-import "core-js/modules/es.array.iterator";
-import "core-js/modules/es.promise";
 import "core-js/modules/web.dom-collections.iterator";
-
-function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
-
-function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
-
-function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
 /******************************************************************************
  *
@@ -33,13 +24,14 @@ export function register(...plugins) {
   plugins = new Set(plugins.length > 0 ? plugins : charts.map(chart => chart.plugin.type));
   charts.forEach(chart => {
     if (plugins.has(chart.plugin.type)) {
-      registerPlugin(chart.plugin.type, _objectSpread({}, DEFAULT_PLUGIN_SETTINGS, {}, chart.plugin, {
+      registerPlugin(chart.plugin.type, { ...DEFAULT_PLUGIN_SETTINGS,
+        ...chart.plugin,
         create: drawChart(chart),
         resize: resizeChart,
         delete: deleteChart,
         save,
         restore
-      }));
+      });
     }
   });
 }
@@ -85,9 +77,9 @@ function drawChart(chart) {
     } = config;
     const filtered = row_pivots.length > 0 ? json.filter(col => col.__ROW_PATH__ && col.__ROW_PATH__.length == row_pivots.length) : json;
 
-    const dataMap = (col, i) => !row_pivots.length ? _objectSpread({}, col, {
+    const dataMap = (col, i) => !row_pivots.length ? { ...col,
       __ROW_PATH__: [i]
-    }) : col;
+    } : col;
 
     const mapped = filtered.map(dataMap);
     let settings = {

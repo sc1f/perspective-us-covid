@@ -1,5 +1,3 @@
-require("core-js/modules/es.array.iterator");
-
 require("core-js/modules/es.string.replace");
 
 require("core-js/modules/web.dom-collections.iterator");
@@ -53,7 +51,7 @@ function supportsPassiveEventListener() {
 
   try {
     const opts = Object.defineProperty({}, "passive", {
-      get: function get() {
+      get: function () {
         supportsPassiveEventListeners = true;
       }
     });
@@ -94,7 +92,7 @@ function onEvt(el, event, handler, capture) {
   } : capture;
   el.addEventListener(event, handler, options);
   return {
-    off: function off() {
+    off: function () {
       el.removeEventListener(event, handler, options);
     }
   };
@@ -254,10 +252,10 @@ const DataTransfer = function () {
   }
 
   Object.defineProperty(DataTransfer.prototype, "dropEffect", {
-    get: function get() {
+    get: function () {
       return this._dropEffect;
     },
-    set: function set(value) {
+    set: function (value) {
       if (this._dataStore.mode !== 0 && ALLOWED_EFFECTS.indexOf(value) > -1) {
         this._dropEffect = value;
       }
@@ -266,7 +264,7 @@ const DataTransfer = function () {
     configurable: true
   });
   Object.defineProperty(DataTransfer.prototype, "types", {
-    get: function get() {
+    get: function () {
       if (this._dataStore.mode !== 0) {
         return Object.freeze(this._dataStore.types);
       }
@@ -275,10 +273,10 @@ const DataTransfer = function () {
     configurable: true
   });
   Object.defineProperty(DataTransfer.prototype, "effectAllowed", {
-    get: function get() {
+    get: function () {
       return this._dataStore.effectAllowed;
     },
-    set: function set(value) {
+    set: function (value) {
       if (this._dataStore.mode === 2 && ALLOWED_EFFECTS.indexOf(value) > -1) {
         this._dataStore.effectAllowed = value;
       }
@@ -810,7 +808,7 @@ const config = {
   iterationInterval: 150,
   tryFindDraggableTarget: tryFindDraggableTarget,
   dragImageSetup: createDragImage,
-  elementFromPoint: function elementFromPoint(x, y) {
+  elementFromPoint: function (x, y) {
     return document.elementFromPoint(x, y);
   }
 };
@@ -844,7 +842,7 @@ function onDelayTouchstart(evt) {
   const el = evt.target;
   const composePath = evt.composedPath();
 
-  const heldItem = function heldItem() {
+  const heldItem = function () {
     console.log("dnd-poly: starting delayed drag..");
     end.off();
     cancel.off();
@@ -853,7 +851,7 @@ function onDelayTouchstart(evt) {
     onTouchstart(evt, composePath);
   };
 
-  const onReleasedItem = function onReleasedItem(event) {
+  const onReleasedItem = function (event) {
     console.log("dnd-poly: aborting delayed drag because of " + event.type);
     end.off();
     cancel.off();

@@ -94,7 +94,7 @@ perspective-viewer.workspace-detail-widget {
   --column-drop-container--margin: 12px 12px 0px 0px;
   --column-container--margin: 12px 0px 0px 0px;
   --row_draggable--animation: none;
-  --button--padding: 1px 9px;
+  --button--padding: 12px 9px;
   --active-column--height: 45px;
   --column-drop-label--font-size: 8px;
   --column_selector--width: 24px;
@@ -223,10 +223,13 @@ perspective-viewer.workspace-master-widget {
   --column-drop-container--margin: 12px 12px 0px 0px;
   --column-container--margin: 12px 0px 0px 0px;
   --row_draggable--animation: none;
-  --button--padding: 1px 9px;
+  --button--padding: 12px 9px;
   --active-column--height: 45px;
   --column-drop-label--font-size: 8px;
   --column_selector--width: 24px;
+}
+perspective-viewer.workspace-master-widget table {
+  color: #cfd8dc;
 }
 perspective-viewer.workspace-master-widget tr td span.pd-tree-group {
   border-left: 1px solid #444;
@@ -265,5 +268,8 @@ perspective-viewer.workspace-master-widget .pd-sub-selected td span.pd-group-nam
 perspective-viewer.workspace-master-widget tbody:hover tr:hover td,
 perspective-viewer.workspace-master-widget tbody:hover tr:hover td span {
   background: #444;
+}
+perspective-viewer.workspace-master-widget table tr:hover {
+  color: #ffffff;
 }
 

@@ -1,7 +1,3 @@
-import "core-js/modules/es.object.assign";
-import "core-js/modules/es.string.includes";
-import "core-js/modules/es.string.split";
-
 /******************************************************************************
  *
  * Copyright (c) 2017, the Perspective Authors.

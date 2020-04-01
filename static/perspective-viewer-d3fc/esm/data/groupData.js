@@ -33,13 +33,13 @@ function seriesDataFn(settings, data, {
 }) {
   const labelfn = labelFunction(settings);
   return mainValue => {
-    const baseValue = col => stack ? col["__BASE_VALUE__".concat(mainValue.name)] || 0 : 0;
+    const baseValue = col => stack ? col[`__BASE_VALUE__${mainValue.name}`] || 0 : 0;
 
     const series = data.map((col, i) => ({
       crossValue: labelfn(col, i),
       mainValue: !!col[mainValue.name] ? col[mainValue.name] : null,
       baseValue: baseValue(col),
-      key: col.__KEY__ ? "".concat(col.__KEY__, "|").concat(mainValue.name) : mainValue.name,
+      key: col.__KEY__ ? `${col.__KEY__}|${mainValue.name}` : mainValue.name,
       row: col.row || col
     }));
     series.key = series[0].key;

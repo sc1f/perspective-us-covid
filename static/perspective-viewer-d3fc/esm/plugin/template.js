@@ -1,11 +1,5 @@
 var _dec, _class;
 
-function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
-
-function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
-
-function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
-
 function _CustomElement() {
   return Reflect.construct(HTMLElement, [], this.__proto__.constructor);
 }
@@ -28,7 +22,7 @@ import template from "../../html/d3fc-chart.html";
 import { areArraysEqualSimple } from "../utils/utils";
 import { initialiseStyles } from "../series/colorStyles";
 import { bindTemplate } from "@finos/perspective-viewer/dist/esm/utils";
-const styleWithD3FC = "".concat(style).concat(getD3FCStyles());
+const styleWithD3FC = `${style}${getD3FCStyles()}`;
 let // eslint-disable-next-line no-unused-vars
 D3FCChartElement = (_dec = bindTemplate(template, styleWithD3FC), _dec(_class = class D3FCChartElement extends _CustomElement {
   constructor() {
@@ -63,13 +57,13 @@ D3FCChartElement = (_dec = bindTemplate(template, styleWithD3FC), _dec(_class = 
   draw() {
     if (this._settings.data) {
       const containerDiv = d3.select(this._container);
-      const chartClass = "chart ".concat(this._chart.plugin.type);
+      const chartClass = `chart ${this._chart.plugin.type}`;
       this._settings.size = this._container.getBoundingClientRect();
 
       if (this._settings.data.length > 0) {
         this._chart(containerDiv.attr("class", chartClass), this._settings);
       } else {
-        containerDiv.attr("class", "".concat(chartClass, " disabled"));
+        containerDiv.attr("class", `${chartClass} disabled`);
       }
     }
   }
@@ -92,9 +86,8 @@ D3FCChartElement = (_dec = bindTemplate(template, styleWithD3FC), _dec(_class = 
 
   getSettings() {
     const excludeSettings = ["crossValues", "mainValues", "splitValues", "filter", "data", "size", "colorStyles"];
-
-    const settings = _objectSpread({}, this._settings);
-
+    const settings = { ...this._settings
+    };
     excludeSettings.forEach(s => {
       delete settings[s];
     });
@@ -102,7 +95,9 @@ D3FCChartElement = (_dec = bindTemplate(template, styleWithD3FC), _dec(_class = 
   }
 
   setSettings(settings) {
-    this._settings = _objectSpread({}, this._settings, {}, settings);
+    this._settings = { ...this._settings,
+      ...settings
+    };
     this.draw();
   }
 
@@ -110,15 +105,17 @@ D3FCChartElement = (_dec = bindTemplate(template, styleWithD3FC), _dec(_class = 
     if (oldSettings) {
       if (!oldSettings.data) {
         // Combine with the restored settings
-        return _objectSpread({}, oldSettings, {}, newSettings);
+        return { ...oldSettings,
+          ...newSettings
+        };
       }
 
       const oldValues = [oldSettings.crossValues, oldSettings.mainValues, oldSettings.splitValues, oldSettings.realValues];
       const newValues = [newSettings.crossValues, newSettings.mainValues, newSettings.splitValues, newSettings.realValues];
-      if (areArraysEqualSimple(oldValues, newValues)) return _objectSpread({}, oldSettings, {
+      if (areArraysEqualSimple(oldValues, newValues)) return { ...oldSettings,
         data: newSettings.data,
         colorStyles: null
-      });
+      };
     }
 
     this.remove();

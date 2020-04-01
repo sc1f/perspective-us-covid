@@ -1,12 +1,5 @@
-import "core-js/modules/es.array.iterator";
-import "core-js/modules/es.array.reverse";
-import "core-js/modules/es.array-buffer.slice";
-import "core-js/modules/es.promise";
-import "core-js/modules/es.string.includes";
 import "core-js/modules/es.string.replace";
-import "core-js/modules/es.string.trim";
 import "core-js/modules/es.typed-array.uint8-array";
-import "core-js/modules/es.typed-array.to-locale-string";
 import "core-js/modules/web.dom-collections.iterator";
 import "core-js/modules/web.url";
 
@@ -396,7 +389,8 @@ PerspectiveViewer = (_dec = bindTemplate(template, view_style, default_style), _
     this._debounce_update();
   }
   /**
-   * Sets the currently selected plugin, via its `name` field.
+   * Sets the currently selected plugin, via its `name` field, and removes
+   * any children the previous plugin may have left behind in the light DOM.
    *
    * @type {string}
    * @fires PerspectiveViewer#perspective-config-update
@@ -409,6 +403,7 @@ PerspectiveViewer = (_dec = bindTemplate(template, view_style, default_style), _
       return;
     }
 
+    this.innerHTML = "";
     const plugin_names = Object.keys(renderers.getInstance());
 
     if (this.hasAttribute("plugin")) {
@@ -418,10 +413,10 @@ PerspectiveViewer = (_dec = bindTemplate(template, view_style, default_style), _
         const guess_plugin = plugin_names.find(x => x.indexOf(plugin) > -1);
 
         if (guess_plugin) {
-          console.warn("Unknown plugin \"".concat(plugin, "\", using \"").concat(guess_plugin, "\""));
+          console.warn(`Unknown plugin "${plugin}", using "${guess_plugin}"`);
           this.setAttribute("plugin", guess_plugin);
         } else {
-          console.error("Unknown plugin \"".concat(plugin, "\""));
+          console.error(`Unknown plugin "${plugin}"`);
           this.setAttribute("plugin", this._vis_selector.options[0].value);
         }
       } else {

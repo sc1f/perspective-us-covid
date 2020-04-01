@@ -1,12 +1,4 @@
-require("core-js/modules/es.array.iterator");
-
-require("core-js/modules/es.object.assign");
-
 require("core-js/modules/web.dom-collections.iterator");
-
-require("core-js/modules/es.array.iterator");
-
-require("core-js/modules/es.object.assign");
 
 require("core-js/modules/web.dom-collections.iterator");
 /******************************************************************************

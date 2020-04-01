@@ -1,7 +1,5 @@
 "use strict";
 
-require("core-js/modules/es.array.iterator");
-
 require("core-js/modules/web.dom-collections.iterator");
 
 Object.defineProperty(exports, "__esModule", {
@@ -9,8 +7,6 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.clean_data = clean_data;
 exports.DataAccessor = void 0;
-
-require("core-js/modules/es.array.iterator");
 
 require("core-js/modules/web.dom-collections.iterator");
 
@@ -53,7 +49,7 @@ class DataAccessor {
     } else if (typeof data[Object.keys(data)[0]] === "string" || typeof data[Object.keys(data)[0]] === "function") {
       return this.data_formats.schema;
     } else {
-      throw "Could not determine data format for ".concat(JSON.stringify(data), ", with JS typeof ").concat(typeof data);
+      throw `Could not determine data format for ${JSON.stringify(data)}, with JS typeof ${typeof data}`;
     }
   }
 
@@ -87,7 +83,7 @@ class DataAccessor {
     } else if (this.format === this.data_formats.schema) {
       value = undefined;
     } else {
-      throw "Could not get() from dataset - ".concat(this.data, " is poorly formatted.");
+      throw `Could not get() from dataset - ${this.data} is poorly formatted.`;
     }
 
     return value;
@@ -196,13 +192,13 @@ class DataAccessor {
         const new_type = (0, _index.get_type_config)(data[name]);
 
         if (new_type.type) {
-          console.debug("Converting \"".concat(data[name], "\" to \"").concat(new_type.type, "\""));
+          console.debug(`Converting "${data[name]}" to "${new_type.type}"`);
           overridden_types[name] = data[name];
           data[name] = new_type.type;
         }
       }
     } else {
-      throw "Could not initialize - failed to determine format for ".concat(data);
+      throw `Could not initialize - failed to determine format for ${data}`;
     }
 
     return overridden_types;

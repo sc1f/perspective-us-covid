@@ -1,15 +1,11 @@
 "use strict";
 
-require("core-js/modules/es.array.iterator");
-
 require("core-js/modules/web.dom-collections.iterator");
 
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.Client = void 0;
-
-require("core-js/modules/es.array.iterator");
 
 require("core-js/modules/web.dom-collections.iterator");
 

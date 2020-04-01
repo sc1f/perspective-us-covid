@@ -1,5 +1,3 @@
-import "core-js/modules/es.promise";
-import "core-js/modules/es.regexp.to-string";
 import "core-js/modules/es.string.replace";
 
 /******************************************************************************

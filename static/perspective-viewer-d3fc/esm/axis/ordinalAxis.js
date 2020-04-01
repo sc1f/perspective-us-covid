@@ -1,6 +1,3 @@
-import "core-js/modules/es.array.iterator";
-import "core-js/modules/es.array.reverse";
-import "core-js/modules/es.string.split";
 import "core-js/modules/web.dom-collections.iterator";
 
 /******************************************************************************
@@ -95,7 +92,7 @@ export const component = settings => {
       left: createAxis(axisSet.left),
       right: createAxis(axisSet.right),
       top: createAxis(axisSet.top),
-      size: "".concat(tickSizeOuter + 10, "px"),
+      size: `${tickSizeOuter + 10}px`,
       decorate
     };
   }; // const pickAxis = multiLevel => {
@@ -248,10 +245,10 @@ export const component = settings => {
     }
 
     if (rotation < 60) {
-      return "rotate(-".concat(rotation, " 5 5)");
+      return `rotate(-${rotation} 5 5)`;
     }
 
-    return "rotate(-".concat(rotation, " 3 7)");
+    return `rotate(-${rotation} 3 7)`;
   };
 
   const applyLabelRotation = (s, rotation) => {

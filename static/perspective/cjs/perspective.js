@@ -1,24 +1,8 @@
 "use strict";
 
-require("core-js/modules/es.array.iterator");
-
-require("core-js/modules/es.array.sort");
-
-require("core-js/modules/es.array-buffer.slice");
-
-require("core-js/modules/es.number.to-fixed");
-
-require("core-js/modules/es.promise");
-
 require("core-js/modules/es.string.replace");
 
-require("core-js/modules/es.string.split");
-
-require("core-js/modules/es.string.trim");
-
 require("core-js/modules/es.typed-array.uint8-array");
-
-require("core-js/modules/es.typed-array.to-locale-string");
 
 require("core-js/modules/web.dom-collections.iterator");
 
@@ -27,25 +11,9 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.default = _default;
 
-require("core-js/modules/es.array.iterator");
-
-require("core-js/modules/es.array.sort");
-
-require("core-js/modules/es.array-buffer.slice");
-
-require("core-js/modules/es.number.to-fixed");
-
-require("core-js/modules/es.promise");
-
 require("core-js/modules/es.string.replace");
 
-require("core-js/modules/es.string.split");
-
-require("core-js/modules/es.string.trim");
-
 require("core-js/modules/es.typed-array.uint8-array");
-
-require("core-js/modules/es.typed-array.to-locale-string");
 
 require("core-js/modules/web.dom-collections.iterator");
 
@@ -69,7 +37,7 @@ var _papaparse = _interopRequireDefault(require("papaparse"));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-function _getRequireWildcardCache() { if (typeof WeakMap !== "function") return null; var cache = new WeakMap(); _getRequireWildcardCache = function _getRequireWildcardCache() { return cache; }; return cache; }
+function _getRequireWildcardCache() { if (typeof WeakMap !== "function") return null; var cache = new WeakMap(); _getRequireWildcardCache = function () { return cache; }; return cache; }
 
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } if (obj === null || typeof obj !== "object" && typeof obj !== "function") { return { default: obj }; } var cache = _getRequireWildcardCache(); if (cache && cache.has(obj)) { return cache.get(obj); } var newObj = {}; var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null; if (desc && (desc.get || desc.set)) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } newObj.default = obj; if (cache) { cache.set(obj, newObj); } return newObj; }
 
@@ -304,7 +272,7 @@ function _default(Module) {
     return extracted;
   }
 
-  const extract_vector_scalar = function extract_vector_scalar(vector) {
+  const extract_vector_scalar = function (vector) {
     // handles deletion already - do not call delete() on the input vector
     // again
     let extracted = [];
@@ -400,7 +368,7 @@ function _default(Module) {
   view.prototype.get_data_slice = function (start_row, end_row, start_col, end_col) {
     const num_sides = this.sides();
     const nidx = SIDES[num_sides];
-    return __MODULE__["get_data_slice_".concat(nidx)](this._View, start_row, end_row, start_col, end_col);
+    return __MODULE__[`get_data_slice_${nidx}`](this._View, start_row, end_row, start_col, end_col);
   };
   /**
    * Given an `options` Object, calculate the correct start/end rows and
@@ -412,7 +380,7 @@ function _default(Module) {
    */
 
 
-  const _parse_format_options = function _parse_format_options(options) {
+  const _parse_format_options = function (options) {
     options = options || {};
     const max_cols = this._View.num_columns() + (this.sides() === 0 ? 0 : 1);
 
@@ -440,7 +408,7 @@ function _default(Module) {
    */
 
 
-  const to_format = function to_format(options, formatter) {
+  const to_format = function (options, formatter) {
     _call_process(this.table.get_id());
 
     options = _parse_format_options.bind(this)(options);
@@ -487,11 +455,7 @@ function _default(Module) {
         const col_name = col_names[cidx];
         const col_type = schema[col_name];
 
-        if ((cidx - (num_sides > 0 ? 1 : 0)) % (this.config.columns.length + hidden) >= this.config.columns.length) {
-          // Hidden columns are always at the end, so don't emit
-          // these.
-          continue;
-        } else if (cidx === start_col && num_sides !== 0) {
+        if (cidx === start_col && num_sides !== 0) {
           if (!this.column_only) {
             formatter.initColumnValue(data, row, "__ROW_PATH__");
 
@@ -505,8 +469,12 @@ function _default(Module) {
               }
             }
           }
+        } else if ((cidx - (num_sides > 0 ? 1 : 0)) % (this.config.columns.length + hidden) >= this.config.columns.length) {
+          // Hidden columns are always at the end, so don't emit
+          // these.
+          continue;
         } else {
-          let value = __MODULE__["get_from_data_slice_".concat(nidx)](slice, ridx, cidx);
+          let value = __MODULE__[`get_from_data_slice_${nidx}`](slice, ridx, cidx);
 
           if ((col_type === "datetime" || col_type === "date") && value !== undefined) {
             if (date_format) {
@@ -561,7 +529,7 @@ function _default(Module) {
    */
 
 
-  const column_to_format = function column_to_format(col_name, options, format_function) {
+  const column_to_format = function (col_name, options, format_function) {
     const num_rows = this.num_rows();
     const start_row = options.start_row || 0;
     const end_row = options.end_row || num_rows;
@@ -724,7 +692,7 @@ function _default(Module) {
 
 
   view.prototype.col_to_js_typed_array = function (col_name, options = {}) {
-    const format_function = __MODULE__["col_to_js_typed_array"];
+    const format_function = __MODULE__[`col_to_js_typed_array`];
     return column_to_format.call(this, col_name, options, format_function);
   };
   /**
@@ -892,7 +860,7 @@ function _default(Module) {
   view.prototype._get_row_delta = async function () {
     const sides = this.sides();
     const nidx = SIDES[sides];
-    return __MODULE__["get_row_delta_".concat(nidx)](this._View);
+    return __MODULE__[`get_row_delta_${nidx}`](this._View);
   };
   /**
    * Register a callback with this {@link module:perspective~view}.  Whenever
@@ -908,13 +876,13 @@ function _default(Module) {
    */
 
 
-  view.prototype.on_update = function (_callback, {
+  view.prototype.on_update = function (callback, {
     mode = "none"
   } = {}) {
     _call_process(this.table.get_id());
 
     if (["none", "cell", "row"].indexOf(mode) === -1) {
-      throw new Error("Invalid update mode \"".concat(mode, "\" - valid modes are \"none\", \"cell\" and \"row\"."));
+      throw new Error(`Invalid update mode "${mode}" - valid modes are "none", "cell" and "row".`);
     }
 
     if (mode === "cell" || mode === "row") {
@@ -926,7 +894,7 @@ function _default(Module) {
 
     this.callbacks.push({
       view: this,
-      orig_callback: _callback,
+      orig_callback: callback,
       callback: async cache => {
         switch (mode) {
           case "cell":
@@ -935,7 +903,7 @@ function _default(Module) {
                 cache.step_delta = await this._get_step_delta();
               }
 
-              _callback(cache.step_delta);
+              callback(cache.step_delta);
             }
             break;
 
@@ -945,13 +913,13 @@ function _default(Module) {
                 cache.row_delta = await this._get_row_delta();
               }
 
-              _callback(cache.row_delta);
+              callback(cache.row_delta);
             }
             break;
 
           default:
             {
-              _callback();
+              callback();
             }
         }
       }
@@ -977,7 +945,7 @@ function _default(Module) {
 
     const total = this.callbacks.length;
     filterInPlace(this.callbacks, x => x.orig_callback !== callback);
-    console.assert(total > this.callbacks.length, "\"callback\" does not match a registered updater");
+    console.assert(total > this.callbacks.length, `"callback" does not match a registered updater`);
   };
   /**
    * Register a callback with this {@link module:perspective~view}.  Whenever
@@ -1002,7 +970,7 @@ function _default(Module) {
   view.prototype.remove_delete = function (callback) {
     const initial_length = this._delete_callbacks.length;
     filterInPlace(this._delete_callbacks, cb => cb !== callback);
-    console.assert(initial_length > this._delete_callbacks.length, "\"callback\" does not match a registered delete callbacks");
+    console.assert(initial_length > this._delete_callbacks.length, `"callback" does not match a registered delete callbacks`);
   };
   /**
    * A view config is a set of options that configures the underlying
@@ -1127,7 +1095,7 @@ function _default(Module) {
    */
 
 
-  function _table(_Table, index, computed, limit, overridden_types) {
+  function table(_Table, index, computed, limit, overridden_types) {
     this._Table = _Table;
     this.gnode_id = this._Table.get_gnode().get_id();
     this.name = Math.random() + "";
@@ -1145,19 +1113,19 @@ function _default(Module) {
     (0, _utils.bindall)(this);
   }
 
-  _table.prototype.compute = function () {
+  table.prototype.compute = function () {
     return true;
   };
 
-  _table.prototype.get_id = function () {
+  table.prototype.get_id = function () {
     return this._Table.get_id();
   };
 
-  _table.prototype.get_pool = function () {
+  table.prototype.get_pool = function () {
     return this._Table.get_pool();
   };
 
-  _table.prototype._update_callback = function () {
+  table.prototype._update_callback = function () {
     let cache = {};
 
     for (let e in this.callbacks) {
@@ -1170,7 +1138,7 @@ function _default(Module) {
    */
 
 
-  _table.prototype.clear = function () {
+  table.prototype.clear = function () {
     _remove_process(this.get_id());
 
     this._Table.reset_gnode(this.gnode_id);
@@ -1180,7 +1148,7 @@ function _default(Module) {
    */
 
 
-  _table.prototype.replace = function (data) {
+  table.prototype.replace = function (data) {
     _remove_process(this.get_id());
 
     this._Table.reset_gnode(this.gnode_id);
@@ -1197,9 +1165,9 @@ function _default(Module) {
    */
 
 
-  _table.prototype.delete = function () {
+  table.prototype.delete = function () {
     if (this.views.length > 0) {
-      throw "Cannot delete Table as it still has ".concat(this.views.length, " registered View(s).");
+      throw `Cannot delete Table as it still has ${this.views.length} registered View(s).`;
     }
 
     _remove_process(this.get_id());
@@ -1221,7 +1189,7 @@ function _default(Module) {
    */
 
 
-  _table.prototype.on_delete = function (callback) {
+  table.prototype.on_delete = function (callback) {
     this._delete_callbacks.push(callback);
   };
   /**
@@ -1232,10 +1200,10 @@ function _default(Module) {
    */
 
 
-  _table.prototype.remove_delete = function (callback) {
+  table.prototype.remove_delete = function (callback) {
     const initial_length = this._delete_callbacks.length;
     filterInPlace(this._delete_callbacks, cb => cb !== callback);
-    console.assert(initial_length > this._delete_callbacks.length, "\"callback\" does not match a registered delete callbacks");
+    console.assert(initial_length > this._delete_callbacks.length, `"callback" does not match a registered delete callbacks`);
   };
   /**
    * The number of accumulated rows in this {@link module:perspective~table}.
@@ -1249,7 +1217,7 @@ function _default(Module) {
    */
 
 
-  _table.prototype.size = function () {
+  table.prototype.size = function () {
     _call_process(this._Table.get_id());
 
     return this._Table.size();
@@ -1268,7 +1236,7 @@ function _default(Module) {
    */
 
 
-  _table.prototype.schema = function (override = true) {
+  table.prototype.schema = function (override = true) {
     let schema = this._Table.get_schema();
 
     let columns = schema.columns();
@@ -1308,7 +1276,7 @@ function _default(Module) {
    */
 
 
-  _table.prototype.computed_schema = function (computed_columns, override = true) {
+  table.prototype.computed_schema = function (computed_columns, override = true) {
     const new_schema = {};
     if (!computed_columns || computed_columns.length === 0) return new_schema; // Before passing into C++, transform array of objects into vector of
     // Tuples expected by the Emscripten binding function.
@@ -1356,7 +1324,7 @@ function _default(Module) {
    */
 
 
-  _table.prototype.get_computation_input_types = function (computed_function_name) {
+  table.prototype.get_computation_input_types = function (computed_function_name) {
     const types = __MODULE__.get_computation_input_types(computed_function_name);
 
     const new_types = [];
@@ -1376,7 +1344,7 @@ function _default(Module) {
    */
 
 
-  _table.prototype.is_valid_filter = function (filter) {
+  table.prototype.is_valid_filter = function (filter) {
     // isNull and isNotNull filter operators are always valid and apply to
     // all schema types
     if (filter[1] === perspective.FILTER_OPERATORS.isNull || filter[1] === perspective.FILTER_OPERATORS.isNotNull) {
@@ -1441,7 +1409,7 @@ function _default(Module) {
    */
 
 
-  _table.prototype.view = function (_config = {}) {
+  table.prototype.view = function (_config = {}) {
     _call_process(this._Table.get_id());
 
     let config = {};
@@ -1449,13 +1417,13 @@ function _default(Module) {
     for (const key of Object.keys(_config)) {
       if (defaults.CONFIG_ALIASES[key]) {
         if (!config[defaults.CONFIG_ALIASES[key]]) {
-          console.warn("Deprecated: \"".concat(key, "\" config parameter, please use \"").concat(defaults.CONFIG_ALIASES[key], "\" instead"));
+          console.warn(`Deprecated: "${key}" config parameter, please use "${defaults.CONFIG_ALIASES[key]}" instead`);
           config[defaults.CONFIG_ALIASES[key]] = _config[key];
         } else {
-          throw new Error("Duplicate configuration parameter \"".concat(key, "\""));
+          throw new Error(`Duplicate configuration parameter "${key}"`);
         }
       } else if (key === "aggregate") {
-        console.warn("Deprecated: \"aggregate\" config parameter has been replaced by \"aggregates\" and \"columns\""); // backwards compatibility: deconstruct `aggregate` into
+        console.warn(`Deprecated: "aggregate" config parameter has been replaced by "aggregates" and "columns"`); // backwards compatibility: deconstruct `aggregate` into
         // `aggregates` and `columns`
 
         config["aggregates"] = {};
@@ -1468,7 +1436,7 @@ function _default(Module) {
       } else if (defaults.CONFIG_VALID_KEYS.indexOf(key) > -1) {
         config[key] = _config[key];
       } else {
-        throw new Error("Unrecognized config parameter \"".concat(key, "\""));
+        throw new Error(`Unrecognized config parameter "${key}"`);
       }
     }
 
@@ -1519,7 +1487,7 @@ function _default(Module) {
       let start = performance.now();
       setTimeout(function poll() {
         let now = performance.now();
-        console.log("".concat((1000 * _msgs / (now - start)).toFixed(2), " msgs/sec"));
+        console.log(`${(1000 * _msgs / (now - start)).toFixed(2)} msgs/sec`);
         _msgs = 0;
         start = now;
         setTimeout(poll, 5000);
@@ -1547,7 +1515,7 @@ function _default(Module) {
    */
 
 
-  _table.prototype.update = function (data) {
+  table.prototype.update = function (data) {
     let pdata;
     let cols = this.columns();
 
@@ -1613,7 +1581,7 @@ function _default(Module) {
       make_table(pdata, this._Table, this.index || "", this.limit, op, true, is_arrow);
       this.initialized = true;
     } catch (e) {
-      console.error("Update failed: ".concat(e));
+      console.error(`Update failed: ${e}`);
     } finally {
       schema.delete();
     }
@@ -1628,7 +1596,7 @@ function _default(Module) {
    */
 
 
-  _table.prototype.remove = function (data) {
+  table.prototype.remove = function (data) {
     let pdata;
     let cols = this.columns();
 
@@ -1657,7 +1625,7 @@ function _default(Module) {
       make_table(pdata, this._Table, this.index || "", this.limit, op, false, is_arrow);
       this.initialized = true;
     } catch (e) {
-      console.error("Remove failed", e);
+      console.error(`Remove failed`, e);
     } finally {
       schema.delete();
     }
@@ -1676,7 +1644,7 @@ function _default(Module) {
    */
 
 
-  _table.prototype.get_computed_functions = function () {
+  table.prototype.get_computed_functions = function () {
     const two_params = ["add", "subtract", "multiply", "divide", "percent_a_of_b", "concat_space", "concat_comma"];
     let functions = (0, _emscripten.extract_map)(__MODULE__.get_computed_functions());
 
@@ -1701,7 +1669,7 @@ function _default(Module) {
    */
 
 
-  _table.prototype.columns = function () {
+  table.prototype.columns = function () {
     let schema = this._Table.get_schema();
 
     let cols = schema.columns();
@@ -1720,7 +1688,7 @@ function _default(Module) {
     return names;
   };
 
-  _table.prototype.execute = function (f) {
+  table.prototype.execute = function (f) {
     f(this);
   };
   /***************************************************************************
@@ -1733,7 +1701,7 @@ function _default(Module) {
   const perspective = {
     __module__: __MODULE__,
     Server: _server.Server,
-    worker: function worker() {
+    worker: function () {
       return this;
     },
     initialize_profile_thread,
@@ -1771,7 +1739,7 @@ function _default(Module) {
      *
      * @returns {table} A new {@link module:perspective~table} object.
      */
-    table: function table(data, options) {
+    table: function (data, options) {
       options = options || {};
       options.index = options.index || "";
       let data_accessor;
@@ -1799,7 +1767,7 @@ function _default(Module) {
       }
 
       if (options.index && options.limit) {
-        throw "Cannot specify both index '".concat(options.index, "' and limit '").concat(options.limit, "'.");
+        throw `Cannot specify both index '${options.index}' and limit '${options.limit}'.`;
       }
 
       let _Table;
@@ -1807,13 +1775,13 @@ function _default(Module) {
       try {
         const op = __MODULE__.t_op.OP_INSERT;
         _Table = make_table(data_accessor, undefined, options.index, options.limit, op, false, is_arrow);
-        return new _table(_Table, options.index, undefined, options.limit, overridden_types);
+        return new table(_Table, options.index, undefined, options.limit, overridden_types);
       } catch (e) {
         if (_Table) {
           _Table.delete();
         }
 
-        console.error("Table initialization failed: ".concat(e));
+        console.error(`Table initialization failed: ${e}`);
         throw e;
       }
     }

@@ -196,6 +196,9 @@
   --highcharts-negative--gradient: linear-gradient(#feeb65 0%, #e4521b 35%, #4d342f 70%, #222222 100%);
   --warning--color: #333;
 }
+.perspective-viewer-material-dark table {
+  color: #cfd8dc;
+}
 .perspective-viewer-material-dark tr td span.pd-tree-group {
   border-left: 1px solid #444;
 }
@@ -233,6 +236,9 @@
 .perspective-viewer-material-dark tbody:hover tr:hover td,
 .perspective-viewer-material-dark tbody:hover tr:hover td span {
   background: #444;
+}
+.perspective-viewer-material-dark table tr:hover {
+  color: #ffffff;
 }
 .perspective-viewer-material-dense {
   font-family: "Open Sans";
@@ -310,7 +316,7 @@
   --column-drop-container--margin: 12px 12px 0px 0px;
   --column-container--margin: 12px 0px 0px 0px;
   --row_draggable--animation: none;
-  --button--padding: 1px 9px;
+  --button--padding: 12px 9px;
   --active-column--height: 45px;
   --column-drop-label--font-size: 8px;
   --column_selector--width: 24px;
@@ -439,48 +445,13 @@
   --column-drop-container--margin: 12px 12px 0px 0px;
   --column-container--margin: 12px 0px 0px 0px;
   --row_draggable--animation: none;
-  --button--padding: 1px 9px;
+  --button--padding: 12px 9px;
   --active-column--height: 45px;
   --column-drop-label--font-size: 8px;
   --column_selector--width: 24px;
 }
-.perspective-viewer-material-dense-dark tr td span.pd-tree-group {
-  border-left: 1px solid #444;
-}
-.perspective-viewer-material-dense-dark tr td.pd-group-header,
-.perspective-viewer-material-dense-dark tr th.pd-group-header {
-  border-right: 1px solid #999;
-}
-.perspective-viewer-material-dense-dark tr:last-child th {
-  border-bottom: 1px solid #999;
-}
-.perspective-viewer-material-dense-dark .pd-selected td {
-  background-color: rgba(0, 0, 0, 0);
-}
-.perspective-viewer-material-dense-dark tr.pd-selected:hover td div {
-  background-color: #444;
-}
-.perspective-viewer-material-dense-dark td.pd-negative {
-  color: #ff8888;
-}
-.perspective-viewer-material-dense-dark td.pd-positive {
-  color: #22a0ce;
-}
-.perspective-viewer-material-dense-dark .pd-selected td:not(.pd-group-header),
-.perspective-viewer-material-dense-dark .pd-selected td span.pd-group-name {
-  background: #EA7319 !important;
-}
-.perspective-viewer-material-dense-dark .pd-selected td {
-  color: #000;
-  background-color: rgba(0, 0, 0, 0);
-}
-.perspective-viewer-material-dense-dark .pd-sub-selected td:not(.pd-group-header),
-.perspective-viewer-material-dense-dark .pd-sub-selected td span.pd-group-name {
-  background: rgba(234, 115, 25, 0.2) !important;
-}
-.perspective-viewer-material-dense-dark tbody:hover tr:hover td,
-.perspective-viewer-material-dense-dark tbody:hover tr:hover td span {
-  background: #444;
+.perspective-viewer-material-dense-dark table {
+  color: #cfd8dc;
 }
 .perspective-viewer-material-dense-dark tr td span.pd-tree-group {
   border-left: 1px solid #444;
@@ -519,6 +490,53 @@
 .perspective-viewer-material-dense-dark tbody:hover tr:hover td,
 .perspective-viewer-material-dense-dark tbody:hover tr:hover td span {
   background: #444;
+}
+.perspective-viewer-material-dense-dark table tr:hover {
+  color: #ffffff;
+}
+.perspective-viewer-material-dense-dark table {
+  color: #cfd8dc;
+}
+.perspective-viewer-material-dense-dark tr td span.pd-tree-group {
+  border-left: 1px solid #444;
+}
+.perspective-viewer-material-dense-dark tr td.pd-group-header,
+.perspective-viewer-material-dense-dark tr th.pd-group-header {
+  border-right: 1px solid #999;
+}
+.perspective-viewer-material-dense-dark tr:last-child th {
+  border-bottom: 1px solid #999;
+}
+.perspective-viewer-material-dense-dark .pd-selected td {
+  background-color: rgba(0, 0, 0, 0);
+}
+.perspective-viewer-material-dense-dark tr.pd-selected:hover td div {
+  background-color: #444;
+}
+.perspective-viewer-material-dense-dark td.pd-negative {
+  color: #ff8888;
+}
+.perspective-viewer-material-dense-dark td.pd-positive {
+  color: #22a0ce;
+}
+.perspective-viewer-material-dense-dark .pd-selected td:not(.pd-group-header),
+.perspective-viewer-material-dense-dark .pd-selected td span.pd-group-name {
+  background: #EA7319 !important;
+}
+.perspective-viewer-material-dense-dark .pd-selected td {
+  color: #000;
+  background-color: rgba(0, 0, 0, 0);
+}
+.perspective-viewer-material-dense-dark .pd-sub-selected td:not(.pd-group-header),
+.perspective-viewer-material-dense-dark .pd-sub-selected td span.pd-group-name {
+  background: rgba(234, 115, 25, 0.2) !important;
+}
+.perspective-viewer-material-dense-dark tbody:hover tr:hover td,
+.perspective-viewer-material-dense-dark tbody:hover tr:hover td span {
+  background: #444;
+}
+.perspective-viewer-material-dense-dark table tr:hover {
+  color: #ffffff;
 }
 .perspective-viewer-vaporwave {
   font-family: "Open Sans";

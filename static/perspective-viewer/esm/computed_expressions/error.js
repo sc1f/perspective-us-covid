@@ -55,7 +55,7 @@ export const PerspectiveLexerErrorMessage = {
    * @param {*} column
    */
   buildUnexpectedCharactersMessage: (fullText, startOffset, length, line, column) => {
-    return "Ln ".concat(line, ", Col ").concat(column, ": Unexpected input `").concat(fullText, "` at character ").concat(startOffset);
+    return `Ln ${line}, Col ${column}: Unexpected input \`${fullText}\` at character ${startOffset}`;
   }
 };
 export const PerspectiveParserErrorMessage = {
@@ -75,7 +75,7 @@ export const PerspectiveParserErrorMessage = {
       });
       return path.join(", ");
     });
-    return "Unexpected token: `".concat(actual, "`\n\nExpected one of the following tokens: \n ").concat(expected_path_names.join("\n"));
+    return `Unexpected token: \`${actual}\`\n\nExpected one of the following tokens: \n ${expected_path_names.join("\n")}`;
   },
 
   /**
@@ -90,7 +90,7 @@ export const PerspectiveParserErrorMessage = {
       expected = token_name_to_display_name[expected];
     }
 
-    let message = "Expecting token `".concat(expected, "`, but found `").concat(actual, "`.");
+    let message = `Expecting token \`${expected}\`, but found \`${actual}\`.`;
 
     if (expected === ")" || expected === "rightParen") {
       message += "\n\nMake sure all left parentheses are matched\nwith right parentheses.";
@@ -106,14 +106,14 @@ export const PerspectiveParserErrorMessage = {
    */
   buildNoViableAltMessage: options => {
     let actual = actual_token_to_string(options.actual);
-    let message = "Unexpected token: `".concat(actual, "`.");
+    let message = `Unexpected token: \`${actual}\`.`;
 
     if (options.ruleName === "Expression") {
-      message += "\n\nExpected a column name, `(`,\nor functional operator such as:\n- `sqrt`\n- `uppercase`\n- `day_of_week`";
+      message += `\n\nExpected a column name, \`(\`,\nor functional operator such as:\n- \`sqrt\`\n- \`uppercase\`\n- \`day_of_week\``;
     } else if (options.ruleName === "ColumnName") {
-      message += "\n\nExpected a column name or `(`";
+      message += `\n\nExpected a column name or \`(\``;
     } else if (options.ruleName === "TerminalColumnName") {
-      message += "\n\nExpected a column name after 'AS'";
+      message += `\n\nExpected a column name after 'AS'`;
     }
 
     return message;

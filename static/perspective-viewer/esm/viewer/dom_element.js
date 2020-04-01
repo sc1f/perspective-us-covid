@@ -1,19 +1,4 @@
-import "core-js/modules/es.array.iterator";
-import "core-js/modules/es.promise";
-import "core-js/modules/es.string.includes";
 import "core-js/modules/web.dom-collections.iterator";
-
-function _templateObject() {
-  const data = _taggedTemplateLiteral(["\n            <option value=\"", "\">", "</option>\n        "]);
-
-  _templateObject = function _templateObject() {
-    return data;
-  };
-
-  return data;
-}
-
-function _taggedTemplateLiteral(strings, raw) { if (!raw) { raw = strings.slice(0); } return Object.freeze(Object.defineProperties(strings, { raw: { value: Object.freeze(raw) } })); }
 
 /******************************************************************************
  *
@@ -37,7 +22,9 @@ const options = vals => {
   const opts = [];
 
   for (name in vals) {
-    opts.push(html(_templateObject(), name, vals[name].name || name));
+    opts.push(html`
+            <option value="${name}">${vals[name].name || name}</option>
+        `);
   }
 
   return opts;
@@ -416,8 +403,8 @@ export class DomElement extends PerspectiveElement {
     if (this._plugin.initial && this._plugin.initial.names) {
       for (const nidx in this._plugin.initial.names) {
         const name = this._plugin.initial.names[nidx];
-        style += "#active_columns perspective-row:nth-child(".concat(parseInt(nidx) + 1, "){margin-top:23px;}");
-        style += "#active_columns perspective-row:nth-child(".concat(parseInt(nidx) + 1, "):before{content:\"").concat(name, "\";}");
+        style += `#active_columns perspective-row:nth-child(${parseInt(nidx) + 1}){margin-top:23px;}`;
+        style += `#active_columns perspective-row:nth-child(${parseInt(nidx) + 1}):before{content:"${name}";}`;
       }
     }
 

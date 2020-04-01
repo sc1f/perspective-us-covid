@@ -1,13 +1,6 @@
-import "core-js/modules/es.array.iterator";
-import "core-js/modules/es.array.reverse";
 import "core-js/modules/es.promise";
-import "core-js/modules/es.string.includes";
 import "core-js/modules/es.string.replace";
 import "core-js/modules/web.dom-collections.iterator";
-
-function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
-
-function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
 
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
@@ -209,9 +202,9 @@ export class PerspectiveWorkspace extends DiscreteSplitPanel {
     PerspectiveDockPanel.mapWidgets(widget => {
       viewers[widget.viewer.getAttribute("slot")] = widget.save();
     }, this.dockpanel.saveLayout());
-    return _objectSpread({}, layout, {
+    return { ...layout,
       viewers
-    });
+    };
   }
 
   restore(value) {
@@ -298,26 +291,26 @@ export class PerspectiveWorkspace extends DiscreteSplitPanel {
       widget = starting_widgets.find(x => x.viewer === viewer);
 
       if (widget) {
-        widget.restore(_objectSpread({}, viewer_config, {
+        widget.restore({ ...viewer_config,
           master
-        }));
+        });
       } else {
         widget = this._createWidget({
-          config: _objectSpread({}, viewer_config, {
+          config: { ...viewer_config,
             master
-          }),
+          },
           viewer
         });
       }
     } else if (viewer_config) {
       widget = this._createWidgetAndNode({
-        config: _objectSpread({}, viewer_config, {
+        config: { ...viewer_config,
           master
-        }),
+        },
         slot: widgetName
       });
     } else {
-      console.error("Could not find or create <perspective-viewer> for slot \"".concat(widgetName, "\""));
+      console.error(`Could not find or create <perspective-viewer> for slot "${widgetName}"`);
     }
 
     if (master || this.mode === MODE.LINKED) {
@@ -328,14 +321,14 @@ export class PerspectiveWorkspace extends DiscreteSplitPanel {
     }
 
     if (widget.linked) {
-      this._linkedViewers.push(widget.viewer);
+      this._linkWidget(widget);
     }
 
     return widget;
   }
 
   _validate(table) {
-    if (!table.hasOwnProperty("view") || table.type !== "table") {
+    if (!("view" in table) || typeof (table === null || table === void 0 ? void 0 : table.view) !== "function") {
       throw new Error("Only `perspective.Table()` instances can be added to `tables`");
     }
 
@@ -343,7 +336,9 @@ export class PerspectiveWorkspace extends DiscreteSplitPanel {
   }
 
   _set_listener(name, table) {
-    if (table instanceof Promise) {
+    var _table;
+
+    if (typeof ((_table = table) === null || _table === void 0 ? void 0 : _table.then) === "function") {
       table = table.then(this._validate);
     } else {
       this._validate(table);
@@ -360,7 +355,7 @@ export class PerspectiveWorkspace extends DiscreteSplitPanel {
     const isUsed = this.getAllWidgets().some(widget => widget.viewer.getAttribute("table") === name);
 
     if (isUsed) {
-      console.error("Cannot remove table: '".concat(name, "' because it's still bound to widget(s)"));
+      console.error(`Cannot remove table: '${name}' because it's still bound to widget(s)`);
       return false;
     }
 
@@ -378,11 +373,11 @@ export class PerspectiveWorkspace extends DiscreteSplitPanel {
     const table_name = viewer.getAttribute("table");
 
     if (table_name) {
-      const slot = this.node.querySelector("slot[name=".concat(slot_name, "]"));
+      const slot = this.node.querySelector(`slot[name=${slot_name}]`);
 
       if (!slot) {
         //const name = viewer.getAttribute("name");
-        console.warn("Undocked ".concat(viewer.outerHTML, ", creating default layout"));
+        console.warn(`Undocked ${viewer.outerHTML}, creating default layout`);
 
         const widget = this._createWidget({
           name: viewer.getAttribute("name"),
@@ -397,7 +392,7 @@ export class PerspectiveWorkspace extends DiscreteSplitPanel {
         this.dockpanel.activateWidget(widget);
       }
     } else {
-      console.warn("No table set for ".concat(viewer.outerHTML));
+      console.warn(`No table set for ${viewer.outerHTML}`);
     }
   }
 
@@ -425,11 +420,15 @@ export class PerspectiveWorkspace extends DiscreteSplitPanel {
     }
 
     const config = widget.save();
-    config.name = config.name ? "".concat(config.name, " (duplicate)") : "";
+    config.name = config.name ? `${config.name} (duplicate)` : "";
 
     const duplicate = this._createWidgetAndNode({
       config
     });
+
+    if (config.linked) {
+      this._linkWidget(duplicate);
+    }
 
     if (widget.master) {
       const index = this.masterPanel.widgets.indexOf(widget) + 1;
@@ -523,7 +522,7 @@ export class PerspectiveWorkspace extends DiscreteSplitPanel {
   makeDetail(widget) {
     widget.master = false;
     this.dockpanel.addWidget(widget, {
-      mode: "split-".concat(this._side)
+      mode: `split-${this._side}`
     });
 
     if (this.masterPanel.widgets.length === 0) {
@@ -541,12 +540,10 @@ export class PerspectiveWorkspace extends DiscreteSplitPanel {
     return this._linkedViewers.indexOf(widget.viewer) > -1;
   }
 
-  toggleLink(widget) {
-    widget.linked = !widget.linked;
+  _linkWidget(widget) {
+    widget.title.className += " linked";
 
-    if (widget.linked) {
-      widget.title.className += " linked";
-
+    if (this._linkedViewers.indexOf(widget.viewer) === -1) {
       this._linkedViewers.push(widget.viewer); // if this is the first linked viewer, make viewers with row-pivots selectable
 
 
@@ -561,6 +558,14 @@ export class PerspectiveWorkspace extends DiscreteSplitPanel {
           }
         });
       }
+    }
+  }
+
+  toggleLink(widget) {
+    widget.linked = !widget.linked;
+
+    if (widget.linked) {
+      this._linkWidget(widget);
     } else {
       widget.title.className = widget.title.className.replace(/ linked/g, "");
       this._linkedViewers = this._linkedViewers.filter(viewer => viewer !== widget.viewer);
@@ -788,9 +793,9 @@ export class PerspectiveWorkspace extends DiscreteSplitPanel {
   }
 
   _gen_id() {
-    let genId = "PERSPECTIVE_GENERATED_ID_".concat(ID_COUNTER++);
+    let genId = `PERSPECTIVE_GENERATED_ID_${ID_COUNTER++}`;
 
-    if (this.element.querySelector("[slot=".concat(genId, "]"))) {
+    if (this.element.querySelector(`[slot=${genId}]`)) {
       genId = this._gen_id();
     }
 
@@ -798,7 +803,7 @@ export class PerspectiveWorkspace extends DiscreteSplitPanel {
   }
 
   _createNode(slotname) {
-    let node = this.node.querySelector("slot[name=".concat(slotname, "]"));
+    let node = this.node.querySelector(`slot[name=${slotname}]`);
 
     if (!node) {
       const slot = document.createElement("slot");
@@ -826,7 +831,7 @@ export class PerspectiveWorkspace extends DiscreteSplitPanel {
 
     if (!node) {
       const slotname = viewer.getAttribute("slot");
-      node = this.node.querySelector("slot[name=".concat(slotname, "]"));
+      node = this.node.querySelector(`slot[name=${slotname}]`);
 
       if (!node) {
         node = this._createNode(slotname);
@@ -850,13 +855,13 @@ export class PerspectiveWorkspace extends DiscreteSplitPanel {
     widget.title.closable = true;
     this.element.appendChild(widget.viewer);
 
-    this._addWidgetEventListeners(widget);
-
     if (table) {
       widget.viewer.load(table);
     }
 
-    widget.restore(config);
+    widget.restore(config).then(() => {
+      this._addWidgetEventListeners(widget);
+    });
     return widget;
   }
 
@@ -884,9 +889,13 @@ export class PerspectiveWorkspace extends DiscreteSplitPanel {
         const config = (_event$target = event.target) === null || _event$target === void 0 ? void 0 : _event$target.save();
 
         if (config) {
-          event.target.restore({
-            selectable: this._linkedViewers.length > 0 && !!config["row-pivots"]
-          });
+          const selectable = this._linkedViewers.length > 0 && !!config["row-pivots"];
+
+          if (selectable !== !!config.selectable) {
+            event.target.restore({
+              selectable
+            });
+          }
         }
       }
     };

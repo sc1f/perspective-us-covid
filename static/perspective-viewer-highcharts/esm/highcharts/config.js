@@ -1,7 +1,4 @@
-import "core-js/modules/es.object.assign";
-import "core-js/modules/es.promise";
 import "core-js/modules/es.string.replace";
-import "core-js/modules/es.string.split";
 
 /******************************************************************************
  *
@@ -260,7 +257,7 @@ export function default_config(aggregates, mode) {
         },
         point: {
           events: {
-            click: async function click() {
+            click: async function () {
               let row_pivots_values = [];
               let column_pivot_values = [];
 
@@ -271,7 +268,7 @@ export function default_config(aggregates, mode) {
                 column_pivot_values = this.series.userOptions.name.split(", ");
                 row_pivots_values = tooltip.get_pivot_values(this.category);
               } else {
-                console.log("Click dispatch for ".concat(mode, " ").concat(type, " not supported."));
+                console.log(`Click dispatch for ${mode} ${type} not supported.`);
                 return;
               }
 
@@ -316,7 +313,7 @@ export function default_config(aggregates, mode) {
       borderColor: "#777777",
       followPointer: false,
       valueDecimals: 2,
-      formatter: function formatter(highcharts_tooltip) {
+      formatter: function (highcharts_tooltip) {
         that._view.schema(false).then(schema => {
           let tooltip_text = tooltip.format_tooltip(this, hover_type, schema, aggregates, pivot_titles);
           highcharts_tooltip.label.attr({
@@ -326,7 +323,7 @@ export function default_config(aggregates, mode) {
 
         return "Loading...";
       },
-      positioner: function positioner(labelWidth, labelHeight, point) {
+      positioner: function (labelWidth, labelHeight, point) {
         let chart = this.chart;
         let tooltipX, tooltipY;
 

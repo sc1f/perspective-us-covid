@@ -1,6 +1,3 @@
-import "core-js/modules/es.promise";
-import "core-js/modules/es.string.split";
-
 /******************************************************************************
  *
  * Copyright (c) 2017, the Perspective Authors.
@@ -54,7 +51,7 @@ function executeTransition(d, rects, nodesMerge, labels, settings, treemapDiv, t
     const i = d3.interpolate(d.current, d.target);
     return t => d.current = i(t);
   }).styleTween("opacity", d => () => d.current.opacity).attrTween("pointer-events", d => () => d.target.visible ? "all" : "none");
-  rects.transition(t).filter(d => d.target.visible).styleTween("x", d => () => "".concat(d.current.x0, "px")).styleTween("y", d => () => "".concat(d.current.y0, "px")).styleTween("width", d => () => "".concat(d.current.x1 - d.current.x0, "px")).styleTween("height", d => () => "".concat(d.current.y1 - d.current.y0, "px"));
+  rects.transition(t).filter(d => d.target.visible).styleTween("x", d => () => `${d.current.x0}px`).styleTween("y", d => () => `${d.current.y0}px`).styleTween("width", d => () => `${d.current.x1 - d.current.x0}px`).styleTween("height", d => () => `${d.current.y1 - d.current.y0}px`);
   labels.transition(t).filter(d => d.target.visible).attrTween("x", d => () => d.current.x0 + calcWidth(d.current) / 2).attrTween("y", d => () => d.current.y0 + calcHeight(d.current) / 2).end().catch(() => enableUserInteraction(nodesMerge)).then(() => {
     if (!labelMapExists(d)) {
       preventTextCollisions(visibleLabelNodes);

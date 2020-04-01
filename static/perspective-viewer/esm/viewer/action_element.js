@@ -1,6 +1,3 @@
-import "core-js/modules/es.array.iterator";
-import "core-js/modules/es.promise";
-import "core-js/modules/es.string.includes";
 import "core-js/modules/web.dom-collections.iterator";
 
 /******************************************************************************
@@ -70,8 +67,8 @@ export class ActionElement extends DomElement {
 
 
   async _pre_resize(width, height, post, pre = undefined) {
-    this._datavis.style.width = "".concat(width, "px");
-    this._datavis.style.height = "".concat(height, "px");
+    this._datavis.style.width = `${width}px`;
+    this._datavis.style.height = `${height}px`;
 
     try {
       if (!document.hidden && this.offsetParent) {
@@ -132,7 +129,7 @@ export class ActionElement extends DomElement {
     let computed_columns = this._get_view_computed_columns();
 
     if (computed_columns.includes(expression)) {
-      console.warn("\"".concat(expression, "\" was not applied because it already exists."));
+      console.warn(`"${expression}" was not applied because it already exists.`);
       return;
     }
 
@@ -281,7 +278,7 @@ export class ActionElement extends DomElement {
     }
 
     if (abs_sorting) {
-      sort_orders = sort_orders.map(x => "".concat(x, " abs"));
+      sort_orders = sort_orders.map(x => `${x} abs`);
     }
 
     sort_orders.push("none");
@@ -336,7 +333,7 @@ export class ActionElement extends DomElement {
 
     const resize = event => {
       const new_width = Math.max(0, Math.min(width + (event.clientX - start), this.offsetWidth - 10));
-      this._side_panel.style.width = "".concat(new_width, "px");
+      this._side_panel.style.width = `${new_width}px`;
 
       if (this._plugin) {
         this.notifyResize();

@@ -24,7 +24,7 @@ export default (() => {
   let altDataWithScale = null;
 
   function nearbyTip(selection) {
-    const chartPlotArea = "d3fc-".concat(canvas ? "canvas" : "svg", ".plot-area");
+    const chartPlotArea = `d3fc-${canvas ? "canvas" : "svg"}.plot-area`;
 
     if (xScale || yScale) {
       let tooltipData = null;
@@ -45,7 +45,7 @@ export default (() => {
   const renderTip = (selection, tipData, useYScale = yScale) => {
     const tips = selection.select("d3fc-svg.plot-area svg").selectAll("circle.nearbyTip").data(tipData);
     tips.exit().remove();
-    tips.enter().append("circle").attr("class", "nearbyTip").merge(tips).attr("r", d => size ? Math.sqrt(size(d.size)) : 10).attr("transform", d => "translate(".concat(xScale(d[xValueName]), ",").concat(useYScale(d[yValueName]), ")")).style("stroke", "none").style("fill", d => color && withOpacity(color(d.key)));
+    tips.enter().append("circle").attr("class", "nearbyTip").merge(tips).attr("r", d => size ? Math.sqrt(size(d.size)) : 10).attr("transform", d => `translate(${xScale(d[xValueName])},${useYScale(d[yValueName])})`).style("stroke", "none").style("fill", d => color && withOpacity(color(d.key)));
     base(tips);
   };
 

@@ -1,4 +1,3 @@
-import "core-js/modules/es.array.iterator";
 import "core-js/modules/web.dom-collections.iterator";
 
 /******************************************************************************
@@ -68,7 +67,7 @@ export class DateParser {
         return new Date(val);
       }
 
-      throw new Error("Unparseable date ".concat(val));
+      throw new Error(`Unparseable date ${val}`);
     }
   }
 

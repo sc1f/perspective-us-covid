@@ -1,9 +1,3 @@
-require("core-js/modules/es.array.iterator");
-
-require("core-js/modules/es.promise");
-
-require("core-js/modules/es.string.split");
-
 require("core-js/modules/web.dom-collections.iterator");
 
 /******************************************************************************
@@ -124,7 +118,7 @@ function perspective_assets(assets, host_psp) {
         let content = await read_promise(filePath);
 
         if (typeof content !== "undefined") {
-          console.log("200 ".concat(url));
+          console.log(`200 ${url}`);
           response.writeHead(200, {
             "Content-Type": contentType
           });
@@ -147,7 +141,7 @@ function perspective_assets(assets, host_psp) {
             let content = await read_promise(filePath);
 
             if (typeof content !== "undefined") {
-              console.log("200 ".concat(url));
+              console.log(`200 ${url}`);
               response.writeHead(200, {
                 "Content-Type": contentType
               });
@@ -162,13 +156,13 @@ function perspective_assets(assets, host_psp) {
         response.writeHead(200);
         response.end("", "utf-8");
       } else {
-        console.error("404 ".concat(url));
+        console.error(`404 ${url}`);
         response.writeHead(404);
         response.end("", "utf-8");
       }
     } catch (error) {
       if (error.code !== "ENOENT") {
-        console.error("500 ".concat(url));
+        console.error(`500 ${url}`);
         response.writeHead(500);
         response.end("", "utf-8");
       }
@@ -203,7 +197,7 @@ class WebSocketServer extends WebSocketManager {
     });
 
     this._server.listen(port, () => {
-      console.log("Listening on port ".concat(this._server.address().port));
+      console.log(`Listening on port ${this._server.address().port}`);
 
       if (on_start) {
         on_start();
