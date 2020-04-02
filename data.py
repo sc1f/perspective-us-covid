@@ -7,12 +7,19 @@ from datetime import date, datetime
 from dateutil import parser
 from io import StringIO
 from perspective import Table
-from constants import STATE_URL, COUNTY_URL, \
-                       STATE_POPULATION_PATH, COUNTY_POPULATION_PATH, \
-                       COUNTY_UNEMPLOYMENT_PATH, US_STATE_ABBREVIATIONS, \
-                       US_STATE_FULL_NAMES, STATE_GOVERNMENT_ALIGNMENT
+from constants import (
+    STATE_URL,
+    COUNTY_URL,
+    STATE_POPULATION_PATH,
+    COUNTY_POPULATION_PATH,
+    COUNTY_UNEMPLOYMENT_PATH,
+    US_STATE_ABBREVIATIONS,
+    US_STATE_FULL_NAMES,
+    STATE_GOVERNMENT_ALIGNMENT,
+)
 
 logging.basicConfig(format="%(asctime)s - %(message)s", level=logging.INFO)
+
 
 class DataTransformer(object):
     """Makes requests to the dataset APIs and outputs a DataFrame containing
@@ -31,32 +38,70 @@ class DataTransformer(object):
 
     @classmethod
     def _clean_state_data(cls, data):
-        state_df = data.rename(columns={
-            "date": "Date",
-            "state": "State Name",
-            "fips": "State FIPS",
-            "cases": "Confirmed",
-            "deaths": "Deaths"
-        })
+        state_df = (
+            data.rename(
+                columns={
+                    "date": "Date",
+                    "state": "State Name",
+                    "fips": "State FIPS",
+                    "cases": "Cumulative Cases",
+                    "deaths": "Cumulative Deaths",
+                }
+            )
+        )
+
         # Perspective treats times as UTC, but we want to normalize all times to EST
         state_df["Date"] = cls._localize_column(state_df["Date"])
-        state_df["State"] = [US_STATE_ABBREVIATIONS.get(x, None) for x in state_df["State Name"]]
+
+        state_df["State"] = [
+            US_STATE_ABBREVIATIONS.get(x, None) for x in state_df["State Name"]
+        ]
+
+        state_df = state_df.set_index(["State Name", "Date"]).sort_index()
+
+        # Cases and Deaths are cumulative - calculate new cases/day
+        state_df["New Cases"] = state_df.groupby(["State Name"])[
+            "Cumulative Cases"
+        ].transform(lambda x: x.diff()).clip(lower=0)
+        state_df["New Deaths"] = state_df.groupby(["State Name"])[
+            "Cumulative Deaths"
+        ].transform(lambda x: x.diff()).clip(lower=0)
+
+        state_df = state_df.reset_index()
 
         return state_df
 
     @classmethod
     def _clean_county_data(cls, data):
-        county_df = data.rename(columns={
-            "date": "Date",
-            "state": "State Name",
-            "fips": "County FIPS",
-            "county": "County",
-            "cases": "Confirmed",
-            "deaths": "Deaths"
-        })
-        county_df["State"] = [US_STATE_ABBREVIATIONS.get(x, None) for x in county_df["State Name"]]
+        county_df = data.rename(
+            columns={
+                "date": "Date",
+                "state": "State Name",
+                "fips": "County FIPS",
+                "county": "County",
+                "cases": "Cumulative Cases",
+                "deaths": "Cumulative Deaths",
+            }
+        )
+
+        county_df["State"] = [
+            US_STATE_ABBREVIATIONS.get(x, None) for x in county_df["State Name"]
+        ]
+
         county_df["Date"] = cls._localize_column(county_df["Date"])
-        county_df.set_index(["County FIPS", "Date"])
+
+        county_df = county_df.set_index(["State Name", "County", "Date"]).sort_index()
+
+        # Cases and Deaths are cumulative - calculate new cases/day
+        county_df["New Cases"] = county_df.groupby(["County"])[
+            "Cumulative Cases"
+        ].transform(lambda x: x.diff()).clip(lower=0)
+
+        county_df["New Deaths"] = county_df.groupby(["County"])[
+            "Cumulative Deaths"
+        ].transform(lambda x: x.diff()).clip(lower=0)
+    
+        county_df = county_df.reset_index().set_index(["County FIPS", "Date"])
 
         return county_df
 
@@ -66,10 +111,24 @@ class DataTransformer(object):
         is treated as one county. Take the county-level dataset and collapse NYC into one county
         under County FIPS 36061, which belongs to Manhattan (New York County).
         """
-        nyc_counties = data[data["County"].isin(["Kings County", "Queens County", "New York County", "Bronx County", "Richmond County", "Kings County, NY", "Queens County, NY", "New York County, NY", "Bronx County, NY", "Richmond County, NY"])]
+        nyc_counties = data[
+            data["County"].isin(
+                [
+                    "Kings County",
+                    "Queens County",
+                    "New York County",
+                    "Bronx County",
+                    "Richmond County",
+                    "Kings County, NY",
+                    "Queens County, NY",
+                    "New York County, NY",
+                    "Bronx County, NY",
+                    "Richmond County, NY",
+                ]
+            )
+        ]
         nyc_counties = nyc_counties[nyc_counties["State"] == "NY"]
         return nyc_counties
-        
 
     @classmethod
     def state_data(cls):
@@ -77,21 +136,44 @@ class DataTransformer(object):
         state-level population data and return a DataFrame containing
         the joined and cleaned data.
         """
-        state_covid_df = cls._clean_state_data(pd.read_csv(STATE_URL, error_bad_lines=False))
+        state_covid_df = cls._clean_state_data(
+            pd.read_csv(STATE_URL, error_bad_lines=False)
+        )
 
         # Get and clean population data
-        state_population_df = pd.read_csv(
-            STATE_POPULATION_PATH, usecols=["STATE", "NAME", "POPESTIMATE2019"]) \
-                .rename(columns={"POPESTIMATE2019": "Population (2019 Estimate)", "NAME": "State Name", "STATE": "State FIPS"}) \
-                .set_index("State FIPS")
-        state_population_df["State"] = [US_STATE_ABBREVIATIONS.get(x, None) for x in state_population_df["State Name"]]
+        state_population_df = (
+            pd.read_csv(
+                STATE_POPULATION_PATH,
+                usecols=["STATE", "NAME", "POPESTIMATE2019"],
+            )
+            .rename(
+                columns={
+                    "POPESTIMATE2019": "Population (2019 Estimate)",
+                    "NAME": "State Name",
+                    "STATE": "State FIPS",
+                }
+            )
+            .set_index("State FIPS")
+        )
+        state_population_df["State"] = [
+            US_STATE_ABBREVIATIONS.get(x, None)
+            for x in state_population_df["State Name"]
+        ]
 
         # Remove region population
-        state_population_df = state_population_df[state_population_df["State"].notnull()]
+        state_population_df = state_population_df[
+            state_population_df["State"].notnull()
+        ]
 
-        merged = state_covid_df \
-            .merge(state_population_df[["Population (2019 Estimate)", "State"]], on="State") \
-            .merge(STATE_GOVERNMENT_ALIGNMENT[["Governor", "State Senate", "State House", "State"]], on="State")
+        merged = state_covid_df.merge(
+            state_population_df[["Population (2019 Estimate)", "State"]],
+            on="State",
+        ).merge(
+            STATE_GOVERNMENT_ALIGNMENT[
+                ["Governor", "State Senate", "State House", "State"]
+            ],
+            on="State",
+        )
 
         logging.info("Finished cleaning and merging state data")
         return merged
@@ -104,67 +186,143 @@ class DataTransformer(object):
         to come), return a DataFrame containing the joined and cleaned
         dataset.
         """
-        county_df = cls._clean_county_data(pd.read_csv(COUNTY_URL, error_bad_lines=False))
+        county_df = cls._clean_county_data(
+            pd.read_csv(COUNTY_URL, error_bad_lines=False)
+        )
         logging.info("Finished cleaning county COVID data")
 
         # Augment with county-level population and unemployment
-        county_population_df = pd.read_csv(
-            COUNTY_POPULATION_PATH, encoding="latin1", usecols=["FIPS", "State", "Area_Name", "POP_ESTIMATE_2018"]) \
-            .rename(columns={"POP_ESTIMATE_2018": "Population (2018 Estimate)", "Area_Name": "County", "FIPS": "County FIPS"}) \
+        county_population_df = (
+            pd.read_csv(
+                COUNTY_POPULATION_PATH,
+                encoding="latin1",
+                usecols=["FIPS", "State", "Area_Name", "POP_ESTIMATE_2018"],
+            )
+            .rename(
+                columns={
+                    "POP_ESTIMATE_2018": "Population (2018 Estimate)",
+                    "Area_Name": "County",
+                    "FIPS": "County FIPS",
+                }
+            )
             .set_index("County FIPS")
-        county_population_df["Population (2018 Estimate)"] = pd.to_numeric(county_population_df["Population (2018 Estimate)"].str.replace(",","").astype(float))
-        
+        )
+        county_population_df["Population (2018 Estimate)"] = pd.to_numeric(
+            county_population_df["Population (2018 Estimate)"]
+            .str.replace(",", "")
+            .astype(float)
+        )
+
         # Fold NYC into one county
         nyc_population_df = cls._fold_nyc(county_population_df)
         population = nyc_population_df["Population (2018 Estimate)"].sum()
 
-        folded_population = pd.DataFrame([{
-            "County FIPS": 36061,
-            "State": "NY",
-            "County": "New York City",
-            "Population (2018 Estimate)": population,
-            "State Name": "New York"
-        }]).set_index("County FIPS")
+        folded_population = pd.DataFrame(
+            [
+                {
+                    "County FIPS": 36061,
+                    "State": "NY",
+                    "County": "New York City",
+                    "Population (2018 Estimate)": population,
+                    "State Name": "New York",
+                }
+            ]
+        ).set_index("County FIPS")
 
-        county_population_df = county_population_df.drop([36005, 36047, 36081, 36085])
-        county_population_df = county_population_df.append(folded_population, sort=True)
+        county_population_df = county_population_df.drop(
+            [36005, 36047, 36081, 36085]
+        )
+        county_population_df = county_population_df.append(
+            folded_population, sort=True
+        )
         logging.info("Finished cleaning county population data")
 
         # Add unemployment data
-        county_unemployment_df = pd.read_csv(
-            COUNTY_UNEMPLOYMENT_PATH, encoding="latin1", usecols=["FIPS", "State", "Area_name", "Unemployment_rate_2018", "Median_Household_Income_2018", "Civilian_labor_force_2018", "Employed_2018", "Unemployed_2018"]) \
-            .rename(columns={
+        county_unemployment_df = (
+            pd.read_csv(
+                COUNTY_UNEMPLOYMENT_PATH,
+                encoding="latin1",
+                usecols=[
+                    "FIPS",
+                    "State",
+                    "Area_name",
+                    "Unemployment_rate_2018",
+                    "Median_Household_Income_2018",
+                    "Civilian_labor_force_2018",
+                    "Employed_2018",
+                    "Unemployed_2018",
+                ],
+            )
+            .rename(
+                columns={
                     "Unemployment_rate_2018": "Unemployment Rate % (2018 Estimate)",
                     "Civilian_labor_force_2018": "Civilian Labor Force (2018 Estimate)",
                     "Employed_2018": "Employed (2018 Estimate)",
                     "Unemployed_2018": "Unemployed (2018 Estimate)",
                     "Median_Household_Income_2018": "Median Household Income (2018 Estimate)",
                     "Area_name": "County",
-                    "FIPS": "County FIPS"
-                }) \
+                    "FIPS": "County FIPS",
+                }
+            )
             .set_index("County FIPS")
+        )
 
-        for col in ["Civilian Labor Force (2018 Estimate)", "Employed (2018 Estimate)", "Unemployed (2018 Estimate)"]:
-            county_unemployment_df[col] =  pd.to_numeric(county_unemployment_df[col].str.replace(",","").astype(float))
+        for col in [
+            "Civilian Labor Force (2018 Estimate)",
+            "Employed (2018 Estimate)",
+            "Unemployed (2018 Estimate)",
+        ]:
+            county_unemployment_df[col] = pd.to_numeric(
+                county_unemployment_df[col].str.replace(",", "").astype(float)
+            )
 
-        county_unemployment_df["Median Household Income (2018 Estimate)"] =  pd.to_numeric([None if str(x) == "nan" else str(x).replace(",","").replace("$","") for x in county_unemployment_df["Median Household Income (2018 Estimate)"]])
+        county_unemployment_df[
+            "Median Household Income (2018 Estimate)"
+        ] = pd.to_numeric(
+            [
+                None
+                if str(x) == "nan"
+                else str(x).replace(",", "").replace("$", "")
+                for x in county_unemployment_df[
+                    "Median Household Income (2018 Estimate)"
+                ]
+            ]
+        )
 
         nyc_unemployment_df = cls._fold_nyc(county_unemployment_df)
-        nyc_folded_unemployment = pd.DataFrame([{
-            "County FIPS": 36061,
-            "State": "NY",
-            "County": "New York City",
-            "Civilian Labor Force (2018 Estimate)": nyc_unemployment_df["Civilian Labor Force (2018 Estimate)"].sum(),
-            "Employed (2018 Estimate)": nyc_unemployment_df["Employed (2018 Estimate)"].sum(),
-            "Unemployed (2018 Estimate)": nyc_unemployment_df["Unemployed (2018 Estimate)"].sum(),
-            "Unemployment Rate % (2018 Estimate)": nyc_unemployment_df["Unemployment Rate % (2018 Estimate)"].sum(),
-            "Median Household Income (2018 Estimate)": nyc_unemployment_df["Median Household Income (2018 Estimate)"].sum(),
-            "State Name": "New York"
-        }]).set_index("County FIPS")
-        
+        nyc_folded_unemployment = pd.DataFrame(
+            [
+                {
+                    "County FIPS": 36061,
+                    "State": "NY",
+                    "County": "New York City",
+                    "Civilian Labor Force (2018 Estimate)": nyc_unemployment_df[
+                        "Civilian Labor Force (2018 Estimate)"
+                    ].sum(),
+                    "Employed (2018 Estimate)": nyc_unemployment_df[
+                        "Employed (2018 Estimate)"
+                    ].sum(),
+                    "Unemployed (2018 Estimate)": nyc_unemployment_df[
+                        "Unemployed (2018 Estimate)"
+                    ].sum(),
+                    "Unemployment Rate % (2018 Estimate)": nyc_unemployment_df[
+                        "Unemployment Rate % (2018 Estimate)"
+                    ].sum(),
+                    "Median Household Income (2018 Estimate)": nyc_unemployment_df[
+                        "Median Household Income (2018 Estimate)"
+                    ].sum(),
+                    "State Name": "New York",
+                }
+            ]
+        ).set_index("County FIPS")
+
         # Drop old counties
-        county_unemployment_df = county_unemployment_df.drop([36005, 36047, 36081, 36085])
-        county_unemployment_df = county_unemployment_df.append(nyc_folded_unemployment, sort=True)
+        county_unemployment_df = county_unemployment_df.drop(
+            [36005, 36047, 36081, 36085]
+        )
+        county_unemployment_df = county_unemployment_df.append(
+            nyc_folded_unemployment, sort=True
+        )
 
         # county_df = county_df \
         #     .join(county_population_df["Population (2018 Estimate)"], on="County FIPS") \
@@ -182,14 +340,16 @@ class DataHost(object):
     def __init__(self):
         self.state_schema = {
             "Date": date,
-            "Deaths": int,
-            "Confirmed": int,
+            "Cumulative Deaths": int,
+            "Cumulative Cases": int,
+            "New Deaths": int,
+            "New Cases": int,
             "Population (2019 Estimate)": int,
             "State": str,
             "State Name": str,
             "Governor": str,
             "State Senate": str,
-            "State House": str
+            "State House": str,
         }
 
         self.county_schema = {
@@ -198,8 +358,10 @@ class DataHost(object):
             "State": str,
             "State Name": str,
             "Date": date,
-            "Confirmed": int,
-            "Deaths": int,
+            "Cumulative Cases": int,
+            "Cumulative Deaths": int,
+            "New Deaths": int,
+            "New Cases": int,
             # "Population (2018 Estimate)": int,
             # "Unemployment Rate % (2018 Estimate)": int,
             # "Unemployed (2018 Estimate)": int,
