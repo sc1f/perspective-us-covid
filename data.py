@@ -38,16 +38,14 @@ class DataTransformer(object):
 
     @classmethod
     def _clean_state_data(cls, data):
-        state_df = (
-            data.rename(
-                columns={
-                    "date": "Date",
-                    "state": "State Name",
-                    "fips": "State FIPS",
-                    "cases": "Cumulative Cases",
-                    "deaths": "Cumulative Deaths",
-                }
-            )
+        state_df = data.rename(
+            columns={
+                "date": "Date",
+                "state": "State Name",
+                "fips": "State FIPS",
+                "cases": "Cumulative Cases",
+                "deaths": "Cumulative Deaths",
+            }
         )
 
         # Perspective treats times as UTC, but we want to normalize all times to EST
@@ -60,12 +58,16 @@ class DataTransformer(object):
         state_df = state_df.set_index(["State Name", "Date"]).sort_index()
 
         # Cases and Deaths are cumulative - calculate new cases/day
-        state_df["New Cases"] = state_df.groupby(["State Name"])[
-            "Cumulative Cases"
-        ].transform(lambda x: x.diff()).clip(lower=0)
-        state_df["New Deaths"] = state_df.groupby(["State Name"])[
-            "Cumulative Deaths"
-        ].transform(lambda x: x.diff()).clip(lower=0)
+        state_df["New Cases"] = (
+            state_df.groupby(["State Name"])["Cumulative Cases"]
+            .transform(lambda x: x.diff())
+            .clip(lower=0)
+        )
+        state_df["New Deaths"] = (
+            state_df.groupby(["State Name"])["Cumulative Deaths"]
+            .transform(lambda x: x.diff())
+            .clip(lower=0)
+        )
 
         state_df = state_df.reset_index()
 
@@ -84,23 +86,33 @@ class DataTransformer(object):
             }
         )
 
+        county_df.loc[
+            county_df["County"] == "New York City", "County FIPS"
+        ] = 36061
+
         county_df["State"] = [
             US_STATE_ABBREVIATIONS.get(x, None) for x in county_df["State Name"]
         ]
 
         county_df["Date"] = cls._localize_column(county_df["Date"])
 
-        county_df = county_df.set_index(["State Name", "County", "Date"]).sort_index()
+        county_df = county_df.set_index(
+            ["State Name", "County", "Date"]
+        ).sort_index()
 
         # Cases and Deaths are cumulative - calculate new cases/day
-        county_df["New Cases"] = county_df.groupby(["County"])[
-            "Cumulative Cases"
-        ].transform(lambda x: x.diff()).clip(lower=0)
+        county_df["New Cases"] = (
+            county_df.groupby(["County"])["Cumulative Cases"]
+            .transform(lambda x: x.diff())
+            .clip(lower=0)
+        )
 
-        county_df["New Deaths"] = county_df.groupby(["County"])[
-            "Cumulative Deaths"
-        ].transform(lambda x: x.diff()).clip(lower=0)
-    
+        county_df["New Deaths"] = (
+            county_df.groupby(["County"])["Cumulative Deaths"]
+            .transform(lambda x: x.diff())
+            .clip(lower=0)
+        )
+
         county_df = county_df.reset_index().set_index(["County FIPS", "Date"])
 
         return county_df
@@ -189,6 +201,7 @@ class DataTransformer(object):
         county_df = cls._clean_county_data(
             pd.read_csv(COUNTY_URL, error_bad_lines=False)
         )
+
         logging.info("Finished cleaning county COVID data")
 
         # Augment with county-level population and unemployment
@@ -230,11 +243,13 @@ class DataTransformer(object):
         ).set_index("County FIPS")
 
         county_population_df = county_population_df.drop(
-            [36005, 36047, 36081, 36085]
+            [36061, 36005, 36047, 36081, 36085]
         )
+
         county_population_df = county_population_df.append(
             folded_population, sort=True
         )
+
         logging.info("Finished cleaning county population data")
 
         # Add unemployment data
@@ -318,18 +333,35 @@ class DataTransformer(object):
 
         # Drop old counties
         county_unemployment_df = county_unemployment_df.drop(
-            [36005, 36047, 36081, 36085]
+            [36061, 36005, 36047, 36081, 36085]
         )
         county_unemployment_df = county_unemployment_df.append(
             nyc_folded_unemployment, sort=True
         )
 
-        # county_df = county_df \
-        #     .join(county_population_df["Population (2018 Estimate)"], on="County FIPS") \
-        #     .join(county_unemployment_df[["Unemployment Rate % (2018 Estimate)", "Unemployed (2018 Estimate)", "Employed (2018 Estimate)", "Civilian Labor Force (2018 Estimate)", "Median Household Income (2018 Estimate)"]], on="County FIPS")
-        # print(len(county_df))
+        county_df = county_df.join(
+            county_population_df["Population (2018 Estimate)"], on="County FIPS"
+        ).join(
+            county_unemployment_df[
+                [
+                    "Unemployment Rate % (2018 Estimate)",
+                    "Unemployed (2018 Estimate)",
+                    "Employed (2018 Estimate)",
+                    "Civilian Labor Force (2018 Estimate)",
+                    "Median Household Income (2018 Estimate)",
+                ]
+            ],
+            on="County FIPS",
+        )
+
+        county_df.loc[
+            county_df["County"] == "New York City",
+            "Median Household Income (2018 Estimate)",
+        ] = 57782
+
         county_df = county_df[county_df["County"] != "Statewide Unallocated"]
         logging.info("Finished cleaning county unemployment data")
+
         return county_df
 
 
@@ -362,12 +394,12 @@ class DataHost(object):
             "Cumulative Deaths": int,
             "New Deaths": int,
             "New Cases": int,
-            # "Population (2018 Estimate)": int,
-            # "Unemployment Rate % (2018 Estimate)": int,
-            # "Unemployed (2018 Estimate)": int,
-            # "Employed (2018 Estimate)": int,
-            # "Civilian Labor Force (2018 Estimate)": int,
-            # "Median Household Income (2018 Estimate)": float
+            "Population (2018 Estimate)": int,
+            "Unemployment Rate % (2018 Estimate)": int,
+            "Unemployed (2018 Estimate)": int,
+            "Employed (2018 Estimate)": int,
+            "Civilian Labor Force (2018 Estimate)": int,
+            "Median Household Income (2018 Estimate)": float,
         }
 
         self._state_data = DataTransformer.state_data()
