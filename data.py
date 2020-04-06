@@ -413,6 +413,9 @@ class DataHost(object):
         self.state_table.update(self._state_data)
         self.county_table.update(self._county_data)
 
+        logging.info("State table size: {}".format(self.state_table.size()))
+        logging.info("County table size: {}".format(self.county_table.size()))
+
         logging.info("Tables updated with latest dataset")
 
     def write_data_to_arrow(self):
