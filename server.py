@@ -3,6 +3,7 @@ import os.path
 import random
 import sys
 import logging
+import time
 import tornado.websocket
 import tornado.web
 import tornado.ioloop
@@ -48,8 +49,28 @@ def make_app():
         (r"/ws", PerspectiveTornadoHandler, {"manager": MANAGER, "check_origin": True})
     ])
 
+def write_arrows():
+    here = os.path.abspath(os.path.dirname(__file__))
+
+    DATA_HOST = DataHost()
+    #MANAGER = PerspectiveManager()
+    STATE_TABLE = DATA_HOST.state_table
+    COUNTY_TABLE = DATA_HOST.county_table
+
+    with open(os.path.join(here, "state_covid_4_7_2020.arrow"), "wb") as file:
+        start = time.time()
+        file.write(STATE_TABLE.view().to_arrow())
+        end = time.time()
+        logging.info("Writing state arrow took {}s".format(end - start))
+
+    with open(os.path.join(here, "county_covid_4_7_2020.arrow"), "wb") as file:
+        start = time.time()
+        file.write(COUNTY_TABLE.view().to_arrow())
+        end = time.time()
+        logging.info("Writing county arrow took {}s".format(end - start))
 
 if __name__ == "__main__":
+    #write_arrows()
     app = make_app()
     port = int(os.environ.get("PORT", 5000))
     app.listen(port)

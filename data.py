@@ -1,8 +1,10 @@
 import json
 import logging
 import requests
+import time
 import pytz
 import pandas as pd
+import pyarrow as pa
 from datetime import date, datetime
 from dateutil import parser
 from io import StringIO
@@ -364,6 +366,12 @@ class DataTransformer(object):
 
         return county_df
 
+def df_to_arrow(df):
+    stream = pa.BufferOutputStream()
+    table = pa.Table.from_pandas(df, preserve_index=False)
+    writer = pa.RecordBatchStreamWriter(stream, table.schema)
+    writer.write_table(table)
+    return stream.getvalue().to_pybytes()
 
 class DataHost(object):
     """Stores cleaned and transformed DataFrames in memory as `perspective.Table`s,
@@ -371,6 +379,7 @@ class DataHost(object):
 
     def __init__(self):
         self.state_schema = {
+            "State FIPS": int,
             "Date": date,
             "Cumulative Deaths": int,
             "Cumulative Cases": int,
@@ -402,18 +411,42 @@ class DataHost(object):
             "Median Household Income (2018 Estimate)": float,
         }
 
+        state_start = time.time()
         self._state_data = DataTransformer.state_data()
+        logging.info("Cleaning state data took {}s".format(time.time() - state_start))
+
+        county_start = time.time()
         self._county_data = DataTransformer.county_data()
+        logging.info("Cleaning county data took {}s".format(time.time() - county_start))
+
+        state_table_start = time.time()
         self.state_table = Table(self.state_schema)
+        logging.info("Init state table took {}s".format(time.time() - state_table_start))
+
+        county_table_start = time.time()
         self.county_table = Table(self.county_schema)
+        logging.info("Init county table took {}s".format(time.time() - county_table_start))
 
         logging.info("Tables initialized with schema")
 
-        # Call `update` on the `Table` with the datset
-        self.state_table.update(self._state_data)
-        self.county_table.update(self._county_data)
+        # Convert dataset to arrow before loading
+        state_arrow_start = time.time()
+        self._state_arrow = df_to_arrow(self._state_data)
+        logging.info("State data to arrow took {}s".format(time.time() - state_arrow_start))
 
+        county_arrow_start = time.time()
+        self._county_arrow = df_to_arrow(self._county_data)
+        logging.info("County data to arrow took {}s".format(time.time() - county_arrow_start))
+
+        # Call `update` on the `Table` with the dataset
+        state_update_start = time.time()
+        self.state_table.update(self._state_arrow)
+        logging.info("Update state table took {}s".format(time.time() - state_update_start))
         logging.info("State table size: {}".format(self.state_table.size()))
+        
+        county_update_start = time.time()
+        self.county_table.update(self._county_arrow)
+        logging.info("Update county table took {}s".format(time.time() - county_update_start))
         logging.info("County table size: {}".format(self.county_table.size()))
 
         logging.info("Tables updated with latest dataset")
