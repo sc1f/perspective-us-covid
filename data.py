@@ -4,7 +4,6 @@ import requests
 import time
 import pytz
 import pandas as pd
-import pyarrow as pa
 from datetime import date, datetime
 from dateutil import parser
 from io import StringIO
@@ -366,20 +365,12 @@ class DataTransformer(object):
 
         return county_df
 
-def df_to_arrow(df):
-    stream = pa.BufferOutputStream()
-    table = pa.Table.from_pandas(df, preserve_index=False)
-    writer = pa.RecordBatchStreamWriter(stream, table.schema)
-    writer.write_table(table)
-    return stream.getvalue().to_pybytes()
-
 class DataHost(object):
     """Stores cleaned and transformed DataFrames in memory as `perspective.Table`s,
     and provides getters for the `Table`s to be used elsewhere."""
 
     def __init__(self):
         self.state_schema = {
-            "State FIPS": int,
             "Date": date,
             "Cumulative Deaths": int,
             "Cumulative Cases": int,
@@ -429,27 +420,16 @@ class DataHost(object):
 
         logging.info("Tables initialized with schema")
 
-        # Convert dataset to arrow before loading
-        state_arrow_start = time.time()
-        self._state_arrow = df_to_arrow(self._state_data)
-        logging.info("State data to arrow took {}s".format(time.time() - state_arrow_start))
-
-        county_arrow_start = time.time()
-        self._county_arrow = df_to_arrow(self._county_data)
-        logging.info("County data to arrow took {}s".format(time.time() - county_arrow_start))
-
         # Call `update` on the `Table` with the dataset
         state_update_start = time.time()
-        self.state_table.update(self._state_arrow)
+        self.state_table.update(self._state_data)
         logging.info("Update state table took {}s".format(time.time() - state_update_start))
         logging.info("State table size: {}".format(self.state_table.size()))
         
         county_update_start = time.time()
-        self.county_table.update(self._county_arrow)
+        self.county_table.update(self._county_data)
         logging.info("Update county table took {}s".format(time.time() - county_update_start))
         logging.info("County table size: {}".format(self.county_table.size()))
 
         logging.info("Tables updated with latest dataset")
 
-    def write_data_to_arrow(self):
-        pass
