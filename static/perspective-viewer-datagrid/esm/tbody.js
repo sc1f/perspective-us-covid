@@ -17,7 +17,16 @@ import { ViewModel } from "./view_model";
  */
 
 export class DatagridBodyViewModel extends ViewModel {
-  _draw_td(ridx, cidx, column, val, id, selected_id, type, depth, is_open, ridx_offset, cidx_offset) {
+  _draw_td(ridx, val, id, is_open, {
+    cidx,
+    column_name,
+    type
+  }, {
+    selected_id,
+    depth,
+    ridx_offset,
+    cidx_offset
+  }) {
     const {
       tr,
       row_container
@@ -37,8 +46,8 @@ export class DatagridBodyViewModel extends ViewModel {
     metadata.id = id;
     metadata.cidx = cidx + cidx_offset;
     metadata.type = type;
-    metadata.column = column;
-    metadata.size_key = `${column}|${type}`;
+    metadata.column = column_name;
+    metadata.size_key = `${column_name}|${type}`;
     metadata.ridx = ridx + ridx_offset;
     td.className = `pd-${type}`;
     const override_width = this._column_sizes.override[metadata.size_key];
@@ -50,8 +59,8 @@ export class DatagridBodyViewModel extends ViewModel {
       td.style.maxWidth = override_width + "px";
     } else {
       td.classList.remove("pd-cell-clip");
-      td.style.minWidth = "0";
-      td.style.maxWidth = "none";
+      td.style.minWidth = "";
+      td.style.maxWidth = "";
     }
 
     const formatter = this._format(type);
@@ -76,7 +85,15 @@ export class DatagridBodyViewModel extends ViewModel {
     };
   }
 
-  draw(container_height, column_name, cidx, column_data, id_column, selected_id, type, depth, ridx_offset, cidx_offset, row_height) {
+  draw(container_height, column_state, view_state) {
+    const {
+      cidx,
+      column_data,
+      id_column
+    } = column_state;
+    let {
+      row_height
+    } = view_state;
     let ridx = 0;
     let td, metadata;
 
@@ -84,7 +101,7 @@ export class DatagridBodyViewModel extends ViewModel {
       const next = column_data[ridx + 1];
       const id = id_column === null || id_column === void 0 ? void 0 : id_column[ridx];
 
-      const obj = this._draw_td(ridx++, cidx, column_name, val, id, selected_id, type, depth, (next === null || next === void 0 ? void 0 : next.length) > (val === null || val === void 0 ? void 0 : val.length), ridx_offset, cidx_offset);
+      const obj = this._draw_td(ridx++, val, id, (next === null || next === void 0 ? void 0 : next.length) > (val === null || val === void 0 ? void 0 : val.length), column_state, view_state);
 
       td = obj.td;
       metadata = obj.metadata;

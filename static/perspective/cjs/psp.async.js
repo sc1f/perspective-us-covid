@@ -249,7 +249,7 @@ var load_perspective = function () {
     A && (buffer = A.buffer);
     Da = buffer.byteLength;
     Ca(buffer);
-    D[25420] = 5344752;
+    D[25404] = 5344688;
 
     function Ea(a) {
       for (; 0 < a.length;) {
@@ -2196,7 +2196,7 @@ var load_perspective = function () {
         return Sa[a].apply(null, d);
       },
       emscripten_get_sbrk_ptr: function () {
-        return 101680;
+        return 101616;
       },
       emscripten_memcpy_big: function (a, b, c) {
         B.set(B.subarray(b, b + c), a);

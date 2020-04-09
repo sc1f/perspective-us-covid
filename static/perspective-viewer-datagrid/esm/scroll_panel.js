@@ -249,7 +249,7 @@ export let DatagridVirtualTableViewModel = (_class = class DatagridVirtualTableV
 
     while (width < this._container_size.width && max_scroll_column >= 0) {
       max_scroll_column--;
-      width += this._column_sizes.indices[max_scroll_column] || 100;
+      width += this._column_sizes.indices[max_scroll_column] || 60;
     }
 
     const psp_offset = this._view_cache.config.row_pivots.length > 0;
@@ -367,7 +367,7 @@ export let DatagridVirtualTableViewModel = (_class = class DatagridVirtualTableV
           virtual_width = 0;
 
       while (cidx < max_scroll_column) {
-        virtual_width += this._column_sizes.indices[cidx] || 100;
+        virtual_width += this._column_sizes.indices[cidx] || 60;
         cidx++;
       }
 
@@ -387,8 +387,7 @@ export let DatagridVirtualTableViewModel = (_class = class DatagridVirtualTableV
   _update_virtual_panel_height(nrows) {
     const {
       row_height = 19
-    } = this._column_sizes; //const header_levels = this._view_cache.config.column_pivots.length + 1;
-
+    } = this._column_sizes;
     const virtual_panel_px_size = Math.min(BROWSER_MAX_HEIGHT, nrows * row_height);
     this._virtual_panel.style.height = `${virtual_panel_px_size}px`;
   }

@@ -36,7 +36,7 @@ def make_app():
     here = os.path.abspath(os.path.dirname(__file__))
 
     DATA_HOST = DataHost()
-    MANAGER = PerspectiveManager()
+    MANAGER = PerspectiveManager(lock=True)
     STATE_TABLE = DATA_HOST.state_table
     COUNTY_TABLE = DATA_HOST.county_table
     MANAGER.host_view("state_data_source", STATE_TABLE.view())
@@ -53,7 +53,6 @@ def write_arrows():
     here = os.path.abspath(os.path.dirname(__file__))
 
     DATA_HOST = DataHost()
-    #MANAGER = PerspectiveManager()
     STATE_TABLE = DATA_HOST.state_table
     COUNTY_TABLE = DATA_HOST.county_table
 
@@ -69,8 +68,16 @@ def write_arrows():
         end = time.time()
         logging.info("Writing county arrow took {}s".format(end - start))
 
+def write_df():
+    here = os.path.abspath(os.path.dirname(__file__))
+
+    DATA_HOST = DataHost()
+    DATA_HOST._state_data.to_pickle(os.path.join(here, "state_covid_4_7_2020.pkl"))
+    DATA_HOST._county_data.to_pickle(os.path.join(here, "county_covid_4_7_2020.pkl"))
+
 if __name__ == "__main__":
-    #write_arrows()
+    # write_df()
+    # write_arrows()
     app = make_app()
     port = int(os.environ.get("PORT", 5000))
     app.listen(port)
